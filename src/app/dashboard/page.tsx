@@ -11,7 +11,7 @@ export default async function DashboardPage() {
 	// 1. Get Team Score (sum of all net_points where status = verified)
 	const { data: teamSubmissions, error: teamError } = await supabase.from('submissions').select('net_points').eq('team_id', TEAM_ID).eq('status', 'verified')
 
-	const teamScore = teamSubmissions?.reduce((acc, curr) => acc + (curr.net_points || 0), 0) || 0
+	const teamScore = (teamSubmissions as any[])?.reduce((acc, curr) => acc + (curr.net_points || 0), 0) || 0
 
 	// 2. Get MVP Scoreboard
 	// We need to join profiles and submissions, then aggregate.
@@ -27,7 +27,7 @@ export default async function DashboardPage() {
 	if (allMemberSubmissions) {
 		const scoresMap = new Map<string, any>()
 
-		allMemberSubmissions.forEach((sub) => {
+		(allMemberSubmissions as any[]).forEach((sub) => {
 			const p = sub.profiles as any
 			if (!scoresMap.has(sub.member_id)) {
 				scoresMap.set(sub.member_id, {

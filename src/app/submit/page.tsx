@@ -36,7 +36,7 @@ export default async function SubmitPage() {
         <h2 className="text-xl font-bold font-mono text-muted-foreground tracking-wider mb-6">TRANSMISSION_LOGS</h2>
         <Card className="bg-background/80 backdrop-blur">
           <CardContent className="p-0">
-            <SubmissionHistory submissions={submissions || []} />
+            <SubmissionHistory submissions={(submissions as any[]) || []} />
           </CardContent>
         </Card>
       </div>

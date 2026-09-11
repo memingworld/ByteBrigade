@@ -27,7 +27,7 @@ export default async function AdminPage() {
 
       <Card className="bg-background/80 backdrop-blur border-cyber-magenta shadow-[0_0_15px_rgba(255,0,60,0.1)]">
         <CardContent className="p-0">
-          <AdminVerificationTable submissions={pendingSubmissions || []} />
+          <AdminVerificationTable submissions={(pendingSubmissions as any[]) || []} />
         </CardContent>
       </Card>
     </div>
