@@ -53,10 +53,18 @@ export default async function DashboardPage() {
 
 	mvps = Array.from(scoresMap.values()).sort((a, b) => b.total_points - a.total_points)
 
+	const { data: recentSubmissions } = await supabase
+		.from('submissions')
+		.select('*, profiles(full_name), activity_catalog(label)')
+		.eq('team_id', TEAM_ID)
+		.eq('status', 'verified')
+		.order('submitted_at', { ascending: false })
+		.limit(15)
+
 	return (
 		<div className="flex-1 flex flex-col min-h-[calc(100vh-3.5rem)] pb-20">
 			<HeroSection teamScore={teamScore} />
-			<ScoreBoard mvps={mvps} />
+			<ScoreBoard mvps={mvps} recentActivity={(recentSubmissions as any[]) || []} />
 		</div>
 	)
 }

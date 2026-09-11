@@ -10,7 +10,7 @@ type MVP = {
   total_points: number;
 }
 
-export default function ScoreBoard({ mvps }: { mvps: MVP[] }) {
+export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], recentActivity: any[] }) {
   const [rotateX, setRotateX] = useState(0)
   const [rotateY, setRotateY] = useState(0)
   const ref = useRef<HTMLDivElement>(null)
@@ -23,8 +23,7 @@ export default function ScoreBoard({ mvps }: { mvps: MVP[] }) {
     const centerX = rect.width / 2
     const centerY = rect.height / 2
     
-    // Calculate rotation based on cursor position
-    const rotateXValue = ((y - centerY) / centerY) * -10 // Max 10 deg
+    const rotateXValue = ((y - centerY) / centerY) * -10
     const rotateYValue = ((x - centerX) / centerX) * 10
 
     setRotateX(rotateXValue)
@@ -37,7 +36,7 @@ export default function ScoreBoard({ mvps }: { mvps: MVP[] }) {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 mt-8 container font-mono perspective-1000">
+    <div className="grid gap-6 md:grid-cols-2 mt-8 container font-mono perspective-1000 items-start">
       <motion.div
         ref={ref}
         onMouseMove={handleMouseMove}
@@ -45,10 +44,10 @@ export default function ScoreBoard({ mvps }: { mvps: MVP[] }) {
         animate={{ rotateX, rotateY }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
         style={{ transformStyle: "preserve-3d" }}
-        className="h-full relative"
+        className="relative"
       >
-        <div className="h-full terminal-border bg-matrix-dark/90 backdrop-blur-md p-6 relative z-10" style={{ transform: "translateZ(30px)" }}>
-          <h3 className="text-xl font-bold text-matrix-green flex items-center gap-2 mb-6 border-b border-matrix-green/30 pb-2">
+        <div className="terminal-border bg-matrix-dark/90 backdrop-blur-md p-6 relative z-10" style={{ transform: "translateZ(30px)" }}>
+          <h3 className="text-xl font-bold text-matrix-green flex items-center gap-2 mb-6 border-b border-matrix-green/30 pb-2 uppercase">
             <span className="w-2 h-2 rounded-full bg-matrix-green animate-pulse" />
             [ MVP_LEADERBOARD ]
           </h3>
@@ -66,7 +65,7 @@ export default function ScoreBoard({ mvps }: { mvps: MVP[] }) {
                       <p className="text-xs text-matrix-green/60">{mvp.sprint_track}</p>
                     </div>
                   </div>
-                  <span className="font-bold text-matrix-green">{mvp.total_points} PTS</span>
+                  <span className="font-bold text-matrix-green">{(mvp.total_points || 0).toLocaleString()} PTS</span>
                 </div>
               ))
             )}
@@ -78,17 +77,49 @@ export default function ScoreBoard({ mvps }: { mvps: MVP[] }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
+        className="flex flex-col gap-6"
       >
-        <div className="h-full terminal-border bg-matrix-dark/90 backdrop-blur-md p-6">
-          <h3 className="text-xl font-bold text-matrix-green mb-6 border-b border-matrix-green/30 pb-2">
-            [ SYSTEM_LOGS ]
+        {/* Decorative Boot Sequence */}
+        <div className="terminal-border bg-matrix-dark/90 backdrop-blur-md p-4 flex flex-col gap-1">
+          <div className="text-xs text-matrix-green/70 space-y-1 overflow-hidden">
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>{">"} INITIALIZING ROOT ACCESS...</motion.p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>{">"} CONNECTING TO BYTE_BRIGADE_NETWORK...</motion.p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }} className="text-matrix-green font-bold">{">"} HANDSHAKE SUCCESSFUL.</p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}>{">"} FETCHING LATEST SUBMISSIONS...</motion.p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.2 }} className="animate-pulse">{">"} SYSTEM OPTIMAL. AWAITING INPUT_</motion.p>
+          </div>
+        </div>
+
+        {/* Live Network Traffic */}
+        <div className="terminal-border bg-matrix-dark/90 backdrop-blur-md p-6">
+          <h3 className="text-xl font-bold text-matrix-green mb-6 border-b border-matrix-green/30 pb-2 uppercase flex items-center justify-between">
+            <span>[ LIVE_NETWORK_TRAFFIC ]</span>
+            <span className="text-xs text-matrix-green/50 animate-pulse font-normal">REC/LIVE</span>
           </h3>
-          <div className="text-sm text-matrix-green/70 space-y-2">
-            <p className="animate-pulse">{">"} INITIALIZING ROOT ACCESS...</p>
-            <p>{">"} CONNECTING TO BYTE_BRIGADE_NETWORK...</p>
-            <p className="text-matrix-green font-bold">{">"} HANDSHAKE SUCCESSFUL.</p>
-            <p>{">"} FETCHING LATEST SUBMISSIONS...</p>
-            <p>{">"} SYSTEM OPTIMAL. AWAITING INPUT.</p>
+          
+          <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+            {recentActivity.length === 0 ? (
+              <div className="text-center py-8 text-matrix-green/50 text-sm">NO_RECENT_TRAFFIC_DETECTED</div>
+            ) : (
+              recentActivity.map((activity) => (
+                <div key={activity.id} className="flex flex-col border-l-2 border-matrix-green/50 pl-3 py-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold text-matrix-green uppercase">
+                      {activity.profiles?.full_name}
+                    </span>
+                    <span className="text-xs text-matrix-green font-bold">
+                      +{activity.net_points} PTS
+                    </span>
+                  </div>
+                  <span className="text-xs text-matrix-green/70 mt-1 uppercase">
+                    EXECUTED: {activity.activity_catalog?.label}
+                  </span>
+                  <span className="text-[10px] text-matrix-green/40 mt-1">
+                    {new Date(activity.submitted_at).toLocaleDateString()} {new Date(activity.submitted_at).toLocaleTimeString()}
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </motion.div>
