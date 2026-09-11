@@ -72,13 +72,19 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                           <div>
                             <h4 className="text-xs font-mono text-matrix-green uppercase mb-1">Proof Files</h4>
                             {sub.submission_proofs && sub.submission_proofs.length > 0 ? (
-                              <ul className="text-sm list-none space-y-2">
+                              <ul className="text-sm list-none space-y-4">
                                 {sub.submission_proofs.map((proof: any) => {
                                   const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/proofs/${proof.storage_path}`
+                                  const isImage = proof.mime_type?.startsWith('image/')
                                   return (
-                                    <li key={proof.id}>
-                                      <a href={url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-matrix-green hover:text-white hover:underline bg-matrix-dark border border-matrix-green/30 p-2">
-                                        <span className="font-mono text-xs uppercase">[VIEW_FILE]</span> {proof.file_name}
+                                    <li key={proof.id} className="flex flex-col gap-2 bg-matrix-dark border border-matrix-green/30 p-2">
+                                      {isImage && (
+                                        <a href={url} target="_blank" rel="noreferrer" className="block max-h-64 overflow-hidden border border-matrix-green/20 hover:border-matrix-green transition-colors">
+                                          <img src={url} alt={proof.file_name} className="w-full h-auto object-cover" />
+                                        </a>
+                                      )}
+                                      <a href={url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-matrix-green hover:text-white hover:underline">
+                                        <span className="font-mono text-xs uppercase">[{isImage ? 'VIEW_FULL_IMAGE' : 'VIEW_FILE'}]</span> {proof.file_name}
                                       </a>
                                     </li>
                                   )
@@ -90,57 +96,78 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                           </div>
                         </div>
 
-                        <div className="border border-matrix-green/50 p-4 bg-matrix-dark space-y-4">
-                          <h4 className="font-mono text-matrix-green">[ DECISION_MATRIX ]</h4>
-                          <form 
-                            action={async (fd) => { 
-                              const btn = document.getElementById(`btn-verify-${sub.id}`) as HTMLButtonElement
-                              if (btn) btn.innerHTML = "VERIFYING..."
-                              await verifySubmission(fd)
-                              setExpandedRow(null)
-                            }} 
-                            className="space-y-2"
-                          >
-                            <input type="hidden" name="submissionId" value={sub.id} />
-                            <div className="flex gap-2 items-center">
-                              <Input name="awardedPoints" type="number" defaultValue={sub.activity_catalog?.points || 0} className="w-24 bg-matrix-dark border-matrix-green text-matrix-green" />
-                              <span className="text-xs font-mono text-matrix-green/70">PTS TO AWARD</span>
-                            </div>
-                            <Input name="decisionNote" placeholder="Verification notes..." className="bg-matrix-dark border-matrix-green text-matrix-green placeholder:text-matrix-green/30" />
-                            <Button id={`btn-verify-${sub.id}`} type="submit" variant="default" className="w-full h-8 text-xs bg-matrix-green hover:bg-white text-matrix-dark font-bold font-mono tracking-widest transition-all">
-                              VERIFY_&_AWARD
-                            </Button>
-                          </form>
-
-                          <div className="flex gap-2">
+                        <div className="border border-matrix-green/50 p-4 bg-matrix-dark space-y-4 flex flex-col justify-between">
+                          <div>
+                            <h4 className="font-mono text-matrix-green mb-4">[ DECISION_MATRIX ]</h4>
                             <form 
                               action={async (fd) => { 
-                                const btn = document.getElementById(`btn-reject-${sub.id}`) as HTMLButtonElement
-                                if (btn) btn.innerHTML = "REJECTING..."
+                                const btn = document.getElementById(`btn-verify-${sub.id}`) as HTMLButtonElement
+                                if (btn) btn.innerHTML = "VERIFYING..."
+                                await verifySubmission(fd)
+                                setExpandedRow(null)
+                              }} 
+                              className="space-y-2 mb-4"
+                            >
+                              <input type="hidden" name="submissionId" value={sub.id} />
+                              <div className="flex gap-2 items-center">
+                                <Input name="awardedPoints" type="number" defaultValue={sub.activity_catalog?.points || 0} className="w-24 bg-matrix-dark border-matrix-green text-matrix-green" />
+                                <span className="text-xs font-mono text-matrix-green/70">PTS TO AWARD</span>
+                              </div>
+                              <Input name="decisionNote" placeholder="Verification notes..." className="bg-matrix-dark border-matrix-green text-matrix-green placeholder:text-matrix-green/30" />
+                              <Button id={`btn-verify-${sub.id}`} type="submit" variant="default" className="w-full h-8 text-xs bg-matrix-green hover:bg-white text-matrix-dark font-bold font-mono tracking-widest transition-all">
+                                VERIFY_&_AWARD
+                              </Button>
+                            </form>
+
+                            <div className="flex gap-2">
+                              <form 
+                                action={async (fd) => { 
+                                  const btn = document.getElementById(`btn-reject-${sub.id}`) as HTMLButtonElement
+                                  if (btn) btn.innerHTML = "REJECTING..."
+                                  await rejectSubmission(fd)
+                                  setExpandedRow(null)
+                                }} 
+                                className="flex-1"
+                              >
+                                <input type="hidden" name="submissionId" value={sub.id} />
+                                <Button id={`btn-reject-${sub.id}`} type="submit" variant="outline" className="w-full h-8 text-xs text-red-500 border-red-500 hover:bg-red-500 hover:text-black font-mono tracking-widest transition-all">
+                                  REJECT
+                                </Button>
+                              </form>
+                              <form 
+                                action={async (fd) => { 
+                                  const btn = document.getElementById(`btn-penalize-${sub.id}`) as HTMLButtonElement
+                                  if (btn) btn.innerHTML = "PENALIZING..."
+                                  await applyPlagiarismPenalty(fd)
+                                  setExpandedRow(null)
+                                }} 
+                                className="flex-1"
+                              >
+                                <input type="hidden" name="submissionId" value={sub.id} />
+                                <input type="hidden" name="basePoints" value={sub.activity_catalog?.points || 0} />
+                                <Button id={`btn-penalize-${sub.id}`} type="submit" variant="destructive" className="w-full h-8 text-xs flex items-center justify-center gap-1 font-mono tracking-widest bg-red-900 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-all px-1">
+                                  <AlertTriangle className="w-3 h-3 flex-shrink-0" />
+                                  PENALIZE
+                                </Button>
+                              </form>
+                            </div>
+                          </div>
+
+                          <div className="pt-4 border-t border-matrix-green/20">
+                            <form 
+                              action={async (fd) => { 
+                                const btn = document.getElementById(`btn-ask-${sub.id}`) as HTMLButtonElement
+                                if (btn) btn.innerHTML = "TRANSMITTING..."
+                                // We route it through rejectSubmission but with a specific note
+                                fd.set("decisionNote", "ACTION REQUIRED: Insufficient proof. Please submit a new payload with clearer evidence.");
                                 await rejectSubmission(fd)
                                 setExpandedRow(null)
                               }} 
-                              className="flex-1"
+                              className="w-full"
                             >
                               <input type="hidden" name="submissionId" value={sub.id} />
-                              <Button id={`btn-reject-${sub.id}`} type="submit" variant="outline" className="w-full h-8 text-xs text-red-500 border-red-500 hover:bg-red-500 hover:text-black font-mono tracking-widest transition-all">
-                                REJECT
-                              </Button>
-                            </form>
-                            <form 
-                              action={async (fd) => { 
-                                const btn = document.getElementById(`btn-penalize-${sub.id}`) as HTMLButtonElement
-                                if (btn) btn.innerHTML = "PENALIZING..."
-                                await applyPlagiarismPenalty(fd)
-                                setExpandedRow(null)
-                              }} 
-                              className="flex-1"
-                            >
-                              <input type="hidden" name="submissionId" value={sub.id} />
-                              <input type="hidden" name="basePoints" value={sub.activity_catalog?.points || 0} />
-                              <Button id={`btn-penalize-${sub.id}`} type="submit" variant="destructive" className="w-full h-8 text-xs flex items-center justify-center gap-1 font-mono tracking-widest bg-red-900 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-all">
-                                <AlertTriangle className="w-3 h-3" />
-                                PENALIZE (90%)
+                              <Button id={`btn-ask-${sub.id}`} type="submit" variant="outline" className="w-full h-8 text-xs text-yellow-500 border-yellow-500 hover:bg-yellow-500 hover:text-black font-mono tracking-widest transition-all">
+                                ASK FOR MORE PROOF
                               </Button>
                             </form>
                           </div>
