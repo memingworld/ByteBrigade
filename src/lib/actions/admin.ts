@@ -7,7 +7,7 @@ import { redirect } from "next/navigation"
 async function verifyAdmin() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return false;
+  if (!user) return { authorized: false, teamId: null };
   
   const { data: _userRoles } = await supabase
     .from("user_roles")
@@ -15,16 +15,23 @@ async function verifyAdmin() {
     .eq("user_id", user.id)
     
   const userRole = _userRoles?.[0] as any
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("team_id")
+    .eq("id", user.id)
+    .single()
     
-  if (userRole && (userRole.role === "core" || userRole.role === "lead")) {
-    return true
+  if (userRole && (userRole.role === "core" || userRole.role === "lead") && profile?.team_id) {
+    return { authorized: true, teamId: profile.team_id }
   }
   
-  return false;
+  return { authorized: false, teamId: null };
 }
 
 export async function verifySubmission(formData: FormData) {
-  if (!(await verifyAdmin())) return { error: "Unauthorized" }
+  const adminCheck = await verifyAdmin()
+  if (!adminCheck.authorized) return { error: "Unauthorized" }
 
   const supabase = createClient()
   const submissionId = formData.get("submissionId") as string
@@ -44,6 +51,7 @@ export async function verifySubmission(formData: FormData) {
       decision_note: decisionNote
     } as any)
     .eq("id", submissionId)
+    .eq("team_id", adminCheck.teamId) // CRITICAL: only allow update if it belongs to admin's team
 
   if (error) return { error: error.message }
   
@@ -53,7 +61,8 @@ export async function verifySubmission(formData: FormData) {
 }
 
 export async function rejectSubmission(formData: FormData) {
-  if (!(await verifyAdmin())) return { error: "Unauthorized" }
+  const adminCheck = await verifyAdmin()
+  if (!adminCheck.authorized) return { error: "Unauthorized" }
 
   const supabase = createClient()
   const submissionId = formData.get("submissionId") as string
@@ -72,6 +81,7 @@ export async function rejectSubmission(formData: FormData) {
       decision_note: decisionNote
     } as any)
     .eq("id", submissionId)
+    .eq("team_id", adminCheck.teamId)
 
   if (error) return { error: error.message }
   
@@ -80,7 +90,8 @@ export async function rejectSubmission(formData: FormData) {
 }
 
 export async function applyPlagiarismPenalty(formData: FormData) {
-  if (!(await verifyAdmin())) return { error: "Unauthorized" }
+  const adminCheck = await verifyAdmin()
+  if (!adminCheck.authorized) return { error: "Unauthorized" }
 
   const supabase = createClient()
   const submissionId = formData.get("submissionId") as string
@@ -104,6 +115,7 @@ export async function applyPlagiarismPenalty(formData: FormData) {
       decision_note: `PLAGIARISM DETECTED: 90% Penalty Applied. ${decisionNote}`
     } as any)
     .eq("id", submissionId)
+    .eq("team_id", adminCheck.teamId)
 
   if (error) return { error: error.message }
   

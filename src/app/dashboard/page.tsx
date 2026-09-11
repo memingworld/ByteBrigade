@@ -7,8 +7,24 @@ import Loading from '../loading'
 
 async function DashboardContent() {
 	const supabase = createClient()
+	const { data: { user } } = await supabase.auth.getUser()
 
-	const TEAM_ID = 'f876de5d-4ada-4e24-bc97-bba3408d82f2'
+	if (!user) {
+		redirect("/login")
+	}
+
+	// Fetch user's team
+	const { data: profile } = await supabase
+		.from("profiles")
+		.select("team_id")
+		.eq("id", user.id)
+		.single()
+
+	const TEAM_ID = profile?.team_id
+
+	if (!TEAM_ID) {
+		return <div className="text-red-500 font-mono text-center p-8">CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM.</div>
+	}
 
 	const { data: teamSubmissions } = await supabase.from('submissions').select('net_points').eq('team_id', TEAM_ID).eq('status', 'verified')
 	const teamScore = (teamSubmissions as any[])?.reduce((acc, curr) => acc + (curr.net_points || 0), 0) || 0

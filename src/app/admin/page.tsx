@@ -45,11 +45,24 @@ async function AdminContent() {
     )
   }
 
-  // Fetch pending submissions
+  // Fetch the admin's team_id dynamically
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("team_id")
+    .eq("id", user.id)
+    .single()
+
+  const adminTeamId = profile?.team_id;
+
+  if (!adminTeamId) {
+    return <div className="text-red-500 font-mono text-center p-8">CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM.</div>
+  }
+
+  // Fetch pending submissions scoped EXACTLY to the admin's team
   const { data: pendingSubmissions } = await supabase
     .from("submissions")
     .select("*, profiles(full_name), activity_catalog(label, points), submission_proofs(*)")
-    .eq("team_id", "f876de5d-4ada-4e24-bc97-bba3408d82f2")
+    .eq("team_id", adminTeamId)
     .eq("status", "pending")
     .order("submitted_at", { ascending: true })
 
