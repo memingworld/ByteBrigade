@@ -49,8 +49,6 @@ export async function signup(formData: FormData) {
     return redirect("/signup?message=INVALID_INPUT: Unauthorized sprint track selected.")
   }
 
-  const supabase = createClient()
-
   // 1. Create the user in Auth
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
