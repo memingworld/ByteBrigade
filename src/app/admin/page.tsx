@@ -46,6 +46,7 @@ export default async function AdminPage() {
   const { data: pendingSubmissions } = await supabase
     .from("submissions")
     .select("*, profiles(full_name), activity_catalog(label, points), submission_proofs(*)")
+    .eq("team_id", "f876de5d-4ada-4e24-bc97-bba3408d82f2")
     .eq("status", "pending")
     .order("submitted_at", { ascending: true })
 
