@@ -12,19 +12,30 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
   const [message, setMessage] = useState("")
   const [selectedActivityId, setSelectedActivityId] = useState("")
 
-  const [fileNames, setFileNames] = useState<string[]>([])
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   
   const selectedActivity = catalog.find(c => c.id === selectedActivityId)
 
   async function clientSubmit(formData: FormData) {
+    if (loading) return;
+    if (selectedFiles.length === 0) {
+      setMessage("INVALID_INPUT: At least 1 evidence file is strictly required.")
+      return
+    }
+
     setLoading(true)
     setMessage("")
+
+    selectedFiles.forEach(file => {
+      formData.append("proofFiles", file)
+    })
+
     const res = await submitActivity(formData)
     if (res?.error) {
       setMessage(res.error)
     } else {
       setMessage("UPLINK_SUCCESS: Activity logged.")
-      setFileNames([])
+      setSelectedFiles([])
     }
     setLoading(false)
   }
@@ -88,49 +99,60 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="proofFiles" className="text-matrix-green">&gt; attach_evidence_files [1-3 required]</Label>
-        <div className={`border border-dashed transition-colors p-8 text-center relative cursor-pointer group ${fileNames.length > 0 ? 'border-matrix-green bg-matrix-green/20' : 'border-matrix-green/50 bg-matrix-green/5 hover:bg-matrix-green/10'}`}>
+        <Label className="text-matrix-green">&gt; attach_evidence_files [1-3 required]</Label>
+        <div className={`border border-dashed transition-colors p-8 text-center relative group ${selectedFiles.length > 0 ? 'border-matrix-green bg-matrix-green/20' : 'border-matrix-green/50 bg-matrix-green/5 hover:bg-matrix-green/10'}`}>
           <Input 
             type="file" 
-            name="proofFiles" 
             multiple
-            required
             accept="image/jpeg,image/png,image/webp,application/pdf"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
             onChange={(e) => {
-              const files = Array.from(e.target.files || [])
-              if (files.length > 3) {
-                setMessage("MAX_FILES_EXCEEDED: Maximum 3 evidence files allowed.")
-                e.target.value = ""
-                setFileNames([])
-                return
-              }
-              const valid = files.every(f => f.size <= 10 * 1024 * 1024)
-              if (!valid) {
-                setMessage("FILE_TOO_LARGE: Max evidence size is 10MB per file")
-                e.target.value = ""
-                setFileNames([])
-                return
-              }
-              setFileNames(files.map(f => f.name))
-              setMessage("")
+              const newFiles = Array.from(e.target.files || [])
+              e.target.value = "" // Reset input so the same file can be selected again
+              
+              setSelectedFiles(prev => {
+                const combined = [...prev, ...newFiles]
+                if (combined.length > 3) {
+                  setMessage("MAX_FILES_EXCEEDED: Maximum 3 evidence files allowed.")
+                  return prev
+                }
+                const valid = combined.every(f => f.size <= 10 * 1024 * 1024)
+                if (!valid) {
+                  setMessage("FILE_TOO_LARGE: Max evidence size is 10MB per file")
+                  return prev
+                }
+                setMessage("")
+                return combined
+              })
             }}
           />
           <UploadCloud className="w-8 h-8 text-matrix-green mx-auto mb-2 group-hover:scale-110 transition-transform" />
           
-          {fileNames.length > 0 ? (
+          {selectedFiles.length > 0 ? (
             <div>
-              <p className="font-bold text-sm text-matrix-green tracking-widest">EVIDENCE_ACQUIRED ({fileNames.length}/3)</p>
+              <p className="font-bold text-sm text-matrix-green tracking-widest">EVIDENCE_ACQUIRED ({selectedFiles.length}/3)</p>
               <div className="text-xs text-matrix-green mt-2 space-y-1">
-                {fileNames.map((name, i) => (
-                  <p key={i}>[{i + 1}] {name}</p>
+                {selectedFiles.map((f, i) => (
+                  <p key={i}>[{i + 1}] {f.name}</p>
                 ))}
               </div>
+              <p className="text-xs text-matrix-green/50 mt-4">Click anywhere to add more files, or...</p>
+              <button 
+                type="button"
+                className="relative z-20 mt-2 px-3 py-1 border border-red-500/50 text-red-500 text-xs hover:bg-red-500/10 transition-colors"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setSelectedFiles([]);
+                  setMessage("");
+                }}
+              >
+                [ CLEAR ALL EVIDENCE ]
+              </button>
             </div>
           ) : (
             <div>
               <p className="font-bold text-sm text-matrix-green tracking-widest">DRAG_AND_DROP_EVIDENCE</p>
-              <p className="text-xs text-matrix-green/50 mt-1">Select 1 to 3 files (local filesystem)</p>
+              <p className="text-xs text-matrix-green/50 mt-1">Select 1 to 3 files (you can add them one by one)</p>
             </div>
           )}
         </div>
