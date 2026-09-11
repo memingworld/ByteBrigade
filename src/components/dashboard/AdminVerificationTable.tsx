@@ -1,0 +1,127 @@
+"use client"`nimport React from "react"
+
+import { useState } from "react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { verifySubmission, rejectSubmission, applyPlagiarismPenalty } from "@/lib/actions/admin"
+import { format } from "date-fns"
+import { AlertTriangle } from "lucide-react"
+
+export default function AdminVerificationTable({ submissions }: { submissions: any[] }) {
+  const [expandedRow, setExpandedRow] = useState<string | null>(null)
+  
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm text-left">
+        <thead className="text-xs font-mono text-cyber-cyan uppercase bg-cyber-cyan/10 border-b border-cyber-cyan">
+          <tr>
+            <th className="px-4 py-3">Operative</th>
+            <th className="px-4 py-3">Activity</th>
+            <th className="px-4 py-3">Date Submitted</th>
+            <th className="px-4 py-3">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {submissions.length === 0 ? (
+            <tr>
+              <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground font-mono">No pending transmissions.</td>
+            </tr>
+          ) : (
+            submissions.map((sub) => (
+              <React.Fragment key={sub.id}>
+                <tr className="border-b border-border/50 hover:bg-muted/50 transition-colors">
+                  <td className="px-4 py-3 font-medium">
+                    {sub.profiles?.full_name}
+                  </td>
+                  <td className="px-4 py-3">
+                    <p className="font-medium text-foreground">{sub.title}</p>
+                    <p className="text-xs text-muted-foreground">{sub.activity_catalog?.label}</p>
+                  </td>
+                  <td className="px-4 py-3 font-mono text-muted-foreground">
+                    {format(new Date(sub.submitted_at), "yyyy-MM-dd HH:mm")}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => setExpandedRow(expandedRow === sub.id ? null : sub.id)}
+                    >
+                      {expandedRow === sub.id ? "CLOSE" : "INSPECT"}
+                    </Button>
+                  </td>
+                </tr>
+                {expandedRow === sub.id && (
+                  <tr className="bg-background/80 border-b border-border">
+                    <td colSpan={4} className="px-6 py-4">
+                      <div className="grid gap-6 md:grid-cols-2">
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="text-xs font-mono text-cyber-cyan uppercase mb-1">Details</h4>
+                            <p className="text-sm bg-card/50 p-3 rounded-none border border-border/50">{sub.details || "No extended details provided."}</p>
+                          </div>
+                          {sub.external_url && (
+                            <div>
+                              <h4 className="text-xs font-mono text-cyber-cyan uppercase mb-1">External Link</h4>
+                              <a href={sub.external_url} target="_blank" rel="noreferrer" className="text-sm text-cyber-magenta hover:underline break-all">
+                                {sub.external_url}
+                              </a>
+                            </div>
+                          )}
+                          <div>
+                            <h4 className="text-xs font-mono text-cyber-cyan uppercase mb-1">Proof Files</h4>
+                            {sub.submission_proofs && sub.submission_proofs.length > 0 ? (
+                              <ul className="text-sm list-disc list-inside">
+                                {sub.submission_proofs.map((proof: any) => (
+                                  <li key={proof.id}>{proof.file_name}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="text-sm text-muted-foreground">No files attached.</p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="border border-border/50 p-4 bg-card/50 space-y-4">
+                          <h4 className="font-mono text-cyber-cyan">DECISION_MATRIX</h4>
+                          <form action={verifySubmission} className="space-y-2">
+                            <input type="hidden" name="submissionId" value={sub.id} />
+                            <div className="flex gap-2 items-center">
+                              <Input name="awardedPoints" type="number" defaultValue={sub.activity_catalog?.points || 0} className="w-24" />
+                              <span className="text-xs font-mono text-muted-foreground">PTS TO AWARD</span>
+                            </div>
+                            <Input name="decisionNote" placeholder="Verification notes..." />
+                            <Button type="submit" variant="default" className="w-full h-8 text-xs bg-green-500 hover:bg-green-600 text-white border-green-500 shadow-[0_0_5px_#22c55e]">
+                              VERIFY_&_AWARD
+                            </Button>
+                          </form>
+
+                          <div className="flex gap-2">
+                            <form action={rejectSubmission} className="flex-1">
+                              <input type="hidden" name="submissionId" value={sub.id} />
+                              <Button type="submit" variant="outline" className="w-full h-8 text-xs text-red-500 border-red-500 hover:bg-red-500/10 hover:text-red-400">
+                                REJECT
+                              </Button>
+                            </form>
+                            <form action={applyPlagiarismPenalty} className="flex-1">
+                              <input type="hidden" name="submissionId" value={sub.id} />
+                              <input type="hidden" name="basePoints" value={sub.activity_catalog?.points || 0} />
+                              <Button type="submit" variant="destructive" className="w-full h-8 text-xs flex items-center gap-1">
+                                <AlertTriangle className="w-3 h-3" />
+                                PENALIZE (90%)
+                              </Button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))
+          )}
+        </tbody>
+      </table>
+    </div>
+  )
+}

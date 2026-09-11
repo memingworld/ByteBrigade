@@ -1,0 +1,75 @@
+"use server"
+
+import { createClient } from "@/lib/supabase/server"
+import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
+
+export async function submitActivity(formData: FormData) {
+  const supabase = createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  
+  if (!user) {
+    return redirect("/login")
+  }
+
+  // Get user profile to get team_id
+  const { data: profile } = await supabase.from("profiles").select("team_id").eq("id", user.id).single()
+  
+  if (!profile) {
+    return { error: "Profile not found" }
+  }
+
+  const activityId = formData.get("activityId") as string
+  const occurredOn = formData.get("occurredOn") as string
+  const title = formData.get("title") as string
+  const details = formData.get("details") as string
+  const externalUrl = formData.get("externalUrl") as string
+  const file = formData.get("proofFile") as File
+
+  // Insert submission
+  const { data: submission, error: subError } = await supabase.from("submissions").insert({
+    member_id: user.id,
+    team_id: profile.team_id,
+    activity_id: activityId,
+    occurred_on: occurredOn,
+    title,
+    details,
+    external_url: externalUrl,
+    status: "pending"
+  }).select().single()
+
+  if (subError || !submission) {
+    console.error("Submission error:", subError)
+    return { error: "Failed to submit activity" }
+  }
+
+  // Handle file upload if present
+  if (file && file.size > 0) {
+    const fileExt = file.name.split(".").pop()
+    const fileName = `${submission.id}-${Math.random()}.${fileExt}`
+    const filePath = `${user.id}/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from("proofs")
+      .upload(filePath, file)
+
+    if (uploadError) {
+      console.error("Upload error:", uploadError)
+      return { error: "Failed to upload proof" }
+    }
+
+    // Record proof
+    await supabase.from("submission_proofs").insert({
+      submission_id: submission.id,
+      storage_path: filePath,
+      file_name: file.name,
+      mime_type: file.type,
+      size_bytes: file.size
+    })
+  }
+
+  revalidatePath("/submit")
+  revalidatePath("/dashboard")
+  
+  return { success: true }
+}
