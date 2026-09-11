@@ -6,7 +6,7 @@ export default async function DashboardPage() {
 	const supabase = createClient()
 
 	// Byte Brigade Team ID for filtering (in a real app, query by slug or user profile)
-	const TEAM_ID = '00000000-0000-0000-0000-000000000000'
+	const TEAM_ID = 'f876de5d-4ada-4e24-bc97-bba3408d82f2'
 
 	// 1. Get Team Score (sum of all net_points where status = verified)
 	const { data: teamSubmissions, error: teamError } = await supabase.from('submissions').select('net_points').eq('team_id', TEAM_ID).eq('status', 'verified')

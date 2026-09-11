@@ -31,7 +31,7 @@ export async function signup(formData: FormData) {
   const sprintTrack = formData.get("sprintTrack") as string
   
   // Byte Brigade team ID
-  const TEAM_ID = "00000000-0000-0000-0000-000000000000" // Replace with actual or fetch by slug
+  const TEAM_ID = "f876de5d-4ada-4e24-bc97-bba3408d82f2"
 
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -54,7 +54,8 @@ export async function signup(formData: FormData) {
     } as any)
     
     if (profileError) {
-      return redirect("/signup?message=Profile creation failed")
+      console.error("Profile Error:", profileError)
+      return redirect("/signup?message=Profile creation failed: " + profileError.message)
     }
   }
 
