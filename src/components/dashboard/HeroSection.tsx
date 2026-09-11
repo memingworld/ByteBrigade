@@ -9,20 +9,20 @@ export default function HeroSection({ teamScore }: { teamScore: number }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="container relative z-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 font-mono"
+        className="container relative z-10 flex flex-col items-center justify-center text-center gap-6 font-mono"
       >
-        <div>
+        <div className="flex flex-col items-center">
           <motion.h2 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="text-matrix-green/70 uppercase tracking-widest text-sm mb-2"
           >
             &gt; SYSTEM_STATUS: ONLINE_AND_SECURE
           </motion.h2>
           <motion.h1 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3 }}
             className="text-5xl md:text-7xl font-bold text-matrix-green tracking-tighter glitch-hover drop-shadow-[0_0_8px_rgba(0,255,65,0.8)]"
           >
@@ -31,10 +31,10 @@ export default function HeroSection({ teamScore }: { teamScore: number }) {
         </div>
         
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-matrix-dark/80 p-6 terminal-border flex flex-col items-end"
+          className="bg-matrix-dark/80 p-6 terminal-border flex flex-col items-center mt-2 w-full max-w-sm"
         >
           <span className="text-matrix-green/70 uppercase tracking-widest text-xs mb-1">
             [ TOTAL_NETWORK_POWER ]

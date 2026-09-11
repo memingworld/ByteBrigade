@@ -67,8 +67,23 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
           <Input 
             type="file" 
             name="proofFile" 
+            accept="image/*,application/pdf,.txt,.zip"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-            onChange={(e) => setFileName(e.target.files?.[0]?.name || "")}
+            onChange={(e) => {
+              const file = e.target.files?.[0]
+              if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                  setMessage("FILE_TOO_LARGE: Max evidence size is 5MB")
+                  e.target.value = ""
+                  setFileName("")
+                } else {
+                  setFileName(file.name)
+                  setMessage("")
+                }
+              } else {
+                setFileName("")
+              }
+            }}
           />
           <UploadCloud className="w-8 h-8 text-matrix-green mx-auto mb-2 group-hover:scale-110 transition-transform" />
           

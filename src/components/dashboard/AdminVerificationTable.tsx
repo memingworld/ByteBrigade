@@ -92,29 +92,53 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
 
                         <div className="border border-matrix-green/50 p-4 bg-matrix-dark space-y-4">
                           <h4 className="font-mono text-matrix-green">[ DECISION_MATRIX ]</h4>
-                          <form action={async (fd) => { await verifySubmission(fd) }} className="space-y-2">
+                          <form 
+                            action={async (fd) => { 
+                              const btn = document.getElementById(`btn-verify-${sub.id}`) as HTMLButtonElement
+                              if (btn) btn.innerHTML = "VERIFYING..."
+                              await verifySubmission(fd)
+                              setExpandedRow(null)
+                            }} 
+                            className="space-y-2"
+                          >
                             <input type="hidden" name="submissionId" value={sub.id} />
                             <div className="flex gap-2 items-center">
                               <Input name="awardedPoints" type="number" defaultValue={sub.activity_catalog?.points || 0} className="w-24 bg-matrix-dark border-matrix-green text-matrix-green" />
                               <span className="text-xs font-mono text-matrix-green/70">PTS TO AWARD</span>
                             </div>
                             <Input name="decisionNote" placeholder="Verification notes..." className="bg-matrix-dark border-matrix-green text-matrix-green placeholder:text-matrix-green/30" />
-                            <Button type="submit" variant="default" className="w-full h-8 text-xs bg-matrix-green hover:bg-white text-matrix-dark font-bold font-mono tracking-widest">
+                            <Button id={`btn-verify-${sub.id}`} type="submit" variant="default" className="w-full h-8 text-xs bg-matrix-green hover:bg-white text-matrix-dark font-bold font-mono tracking-widest transition-all">
                               VERIFY_&_AWARD
                             </Button>
                           </form>
 
                           <div className="flex gap-2">
-                            <form action={async (fd) => { await rejectSubmission(fd) }} className="flex-1">
+                            <form 
+                              action={async (fd) => { 
+                                const btn = document.getElementById(`btn-reject-${sub.id}`) as HTMLButtonElement
+                                if (btn) btn.innerHTML = "REJECTING..."
+                                await rejectSubmission(fd)
+                                setExpandedRow(null)
+                              }} 
+                              className="flex-1"
+                            >
                               <input type="hidden" name="submissionId" value={sub.id} />
-                              <Button type="submit" variant="outline" className="w-full h-8 text-xs text-red-500 border-red-500 hover:bg-red-500 hover:text-black font-mono tracking-widest">
+                              <Button id={`btn-reject-${sub.id}`} type="submit" variant="outline" className="w-full h-8 text-xs text-red-500 border-red-500 hover:bg-red-500 hover:text-black font-mono tracking-widest transition-all">
                                 REJECT
                               </Button>
                             </form>
-                            <form action={async (fd) => { await applyPlagiarismPenalty(fd) }} className="flex-1">
+                            <form 
+                              action={async (fd) => { 
+                                const btn = document.getElementById(`btn-penalize-${sub.id}`) as HTMLButtonElement
+                                if (btn) btn.innerHTML = "PENALIZING..."
+                                await applyPlagiarismPenalty(fd)
+                                setExpandedRow(null)
+                              }} 
+                              className="flex-1"
+                            >
                               <input type="hidden" name="submissionId" value={sub.id} />
                               <input type="hidden" name="basePoints" value={sub.activity_catalog?.points || 0} />
-                              <Button type="submit" variant="destructive" className="w-full h-8 text-xs flex items-center gap-1 font-mono tracking-widest bg-red-900 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black">
+                              <Button id={`btn-penalize-${sub.id}`} type="submit" variant="destructive" className="w-full h-8 text-xs flex items-center justify-center gap-1 font-mono tracking-widest bg-red-900 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black transition-all">
                                 <AlertTriangle className="w-3 h-3" />
                                 PENALIZE (90%)
                               </Button>

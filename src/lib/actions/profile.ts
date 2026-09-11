@@ -15,18 +15,44 @@ export async function updateProfile(formData: FormData) {
   const fullName = formData.get("fullName") as string
   const department = formData.get("department") as string
   const sprintTrack = formData.get("sprintTrack") as string
+  const file = formData.get("avatarFile") as File
   
-  // Avatar logic would go here if uploading a file, for now we just allow string path if any
-  // But user just asked to change settings such as department etc.
+  let avatarPath = null;
   
-  // @ts-ignore
-  const { error } = await supabase.from("profiles").upsert({
+  // Handle avatar upload
+  if (file && file.size > 0) {
+    if (file.size > 5 * 1024 * 1024) {
+      return { error: "Avatar image exceeds 5MB limit" }
+    }
+    const fileExt = file.name.split(".").pop()
+    const fileName = `${user.id}-${Math.random()}.${fileExt}`
+    const filePath = `${user.id}/${fileName}`
+
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(filePath, file, { upsert: true })
+
+    if (uploadError) {
+      return { error: `AVATAR_UPLOAD_ERROR: ${uploadError.message}` }
+    }
+    
+    avatarPath = filePath
+  }
+  
+  const updatePayload: any = {
     id: user.id,
     team_id: "f876de5d-4ada-4e24-bc97-bba3408d82f2",
     full_name: fullName,
     department,
     sprint_track: sprintTrack || null
-  } as any)
+  }
+  
+  if (avatarPath) {
+    updatePayload.avatar_path = avatarPath
+  }
+
+  // @ts-ignore
+  const { error } = await supabase.from("profiles").upsert(updatePayload)
 
   if (error) {
     return { error: error.message }

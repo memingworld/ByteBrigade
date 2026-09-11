@@ -2,11 +2,25 @@
 
 import { useState } from "react"
 import { updateProfile } from "@/lib/actions/profile"
-import { User, Shield } from "lucide-react"
+import { User, Shield, UploadCloud } from "lucide-react"
 
 export default function ProfileSettingsForm({ profile, userEmail }: { profile: any, userEmail: string }) {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null)
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(
+    profile.avatar_path ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${profile.avatar_path}` : null
+  )
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setMessage({ type: 'error', text: 'FILE_TOO_LARGE: Max size is 5MB' })
+        return
+      }
+      setAvatarPreview(URL.createObjectURL(file))
+    }
+  }
 
   const handleSubmit = async (formData: FormData) => {
     setLoading(true)
@@ -26,8 +40,22 @@ export default function ProfileSettingsForm({ profile, userEmail }: { profile: a
   return (
     <form action={handleSubmit} className="flex flex-col gap-6 font-mono text-matrix-green">
       <div className="flex items-center gap-4 border-b border-matrix-green/30 pb-4 mb-4">
-        <div className="h-16 w-16 bg-matrix-green/10 border border-matrix-green flex items-center justify-center">
-          <User className="h-8 w-8" />
+        <div className="h-16 w-16 bg-matrix-green/10 border border-matrix-green flex items-center justify-center relative overflow-hidden group cursor-pointer">
+          {avatarPreview ? (
+            <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+          ) : (
+            <User className="h-8 w-8" />
+          )}
+          <input 
+            type="file" 
+            name="avatarFile" 
+            accept="image/*" 
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+            onChange={handleAvatarChange}
+          />
+          <div className="absolute inset-0 bg-matrix-dark/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <UploadCloud className="w-6 h-6 text-matrix-green" />
+          </div>
         </div>
         <div>
           <h2 className="text-xl font-bold">{profile.full_name || "UNKNOWN_OPERATIVE"}</h2>
