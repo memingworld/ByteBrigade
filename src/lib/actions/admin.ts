@@ -30,10 +30,10 @@ export async function verifySubmission(formData: FormData) {
     .update({
       status: "verified",
       awarded_points: awardedPoints,
-      decided_by: user?.id,
+      decided_by: user?.id || null,
       decided_at: new Date().toISOString(),
       decision_note: decisionNote
-    })
+    } as any)
     .eq("id", submissionId)
 
   if (error) return { error: error.message }
@@ -57,10 +57,10 @@ export async function rejectSubmission(formData: FormData) {
     .update({
       status: "rejected",
       awarded_points: 0,
-      decided_by: user?.id,
+      decided_by: user?.id || null,
       decided_at: new Date().toISOString(),
       decision_note: decisionNote
-    })
+    } as any)
     .eq("id", submissionId)
 
   if (error) return { error: error.message }
@@ -88,10 +88,10 @@ export async function applyPlagiarismPenalty(formData: FormData) {
       status: "rejected",
       awarded_points: 0,
       penalty_points: penaltyPoints,
-      decided_by: user?.id,
+      decided_by: user?.id || null,
       decided_at: new Date().toISOString(),
       decision_note: `PLAGIARISM DETECTED: 90% Penalty Applied. ${decisionNote}`
-    })
+    } as any)
     .eq("id", submissionId)
 
   if (error) return { error: error.message }

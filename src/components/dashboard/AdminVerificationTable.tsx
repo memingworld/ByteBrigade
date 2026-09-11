@@ -85,7 +85,7 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
 
                         <div className="border border-border/50 p-4 bg-card/50 space-y-4">
                           <h4 className="font-mono text-cyber-cyan">DECISION_MATRIX</h4>
-                          <form action={verifySubmission} className="space-y-2">
+                          <form action={async (fd) => { await verifySubmission(fd) }} className="space-y-2">
                             <input type="hidden" name="submissionId" value={sub.id} />
                             <div className="flex gap-2 items-center">
                               <Input name="awardedPoints" type="number" defaultValue={sub.activity_catalog?.points || 0} className="w-24" />
@@ -98,13 +98,13 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                           </form>
 
                           <div className="flex gap-2">
-                            <form action={rejectSubmission} className="flex-1">
+                            <form action={async (fd) => { await rejectSubmission(fd) }} className="flex-1">
                               <input type="hidden" name="submissionId" value={sub.id} />
                               <Button type="submit" variant="outline" className="w-full h-8 text-xs text-red-500 border-red-500 hover:bg-red-500/10 hover:text-red-400">
                                 REJECT
                               </Button>
                             </form>
-                            <form action={applyPlagiarismPenalty} className="flex-1">
+                            <form action={async (fd) => { await applyPlagiarismPenalty(fd) }} className="flex-1">
                               <input type="hidden" name="submissionId" value={sub.id} />
                               <input type="hidden" name="basePoints" value={sub.activity_catalog?.points || 0} />
                               <Button type="submit" variant="destructive" className="w-full h-8 text-xs flex items-center gap-1">

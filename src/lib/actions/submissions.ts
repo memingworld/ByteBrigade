@@ -36,7 +36,7 @@ export async function submitActivity(formData: FormData) {
     details,
     external_url: externalUrl,
     status: "pending"
-  }).select().single()
+  } as any).select().single()
 
   if (subError || !submission) {
     console.error("Submission error:", subError)
@@ -65,7 +65,7 @@ export async function submitActivity(formData: FormData) {
       file_name: file.name,
       mime_type: file.type,
       size_bytes: file.size
-    })
+    } as any)
   }
 
   revalidatePath("/submit")

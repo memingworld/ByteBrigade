@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { redirect } from "next/navigation"
 import SubmissionForm from "@/components/forms/SubmissionForm"
 import SubmissionHistory from "@/components/dashboard/SubmissionHistory"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -6,6 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 export default async function SubmitPage() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect("/login")
+  }
 
   // Fetch active catalog
   const { data: catalog } = await supabase
@@ -18,7 +23,7 @@ export default async function SubmitPage() {
   const { data: submissions } = await supabase
     .from("submissions")
     .select("*, activity_catalog(label)")
-    .eq("member_id", user?.id)
+    .eq("member_id", user.id)
     .order("submitted_at", { ascending: false })
 
   return (

@@ -50,7 +50,7 @@ export async function signup(formData: FormData) {
       department: department,
       team_id: TEAM_ID, // Assuming this exists or handles dynamically
       sprint_track: sprintTrack,
-    })
+    } as any)
     
     if (profileError) {
       return redirect("/signup?message=Profile creation failed")
