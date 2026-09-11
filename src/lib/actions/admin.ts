@@ -9,13 +9,12 @@ async function verifyAdmin() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return false;
   
-  const { data: _userRole } = await supabase
+  const { data: _userRoles } = await supabase
     .from("user_roles")
     .select("role")
     .eq("user_id", user.id)
-    .single()
     
-  const userRole = _userRole as any
+  const userRole = _userRoles?.[0] as any
     
   if (userRole && (userRole.role === "core" || userRole.role === "lead")) {
     return true

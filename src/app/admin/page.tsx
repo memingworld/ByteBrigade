@@ -12,12 +12,12 @@ export default async function AdminPage() {
   }
 
   // Authorize User
-  const { data: _userRole, error: roleError } = await supabase
+  const { data: _userRoles, error: roleError } = await supabase
     .from("user_roles")
     .select("role")
     .eq("user_id", user.id)
-    .single()
-  const userRole = _userRole as any
+
+  const userRole = _userRoles?.[0] as any
     
   if (!userRole || (userRole.role !== "core" && userRole.role !== "lead")) {
     return (
