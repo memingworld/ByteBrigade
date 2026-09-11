@@ -25,7 +25,7 @@ export default async function DashboardPage() {
 	let mvps: { member_id: string; full_name: string; sprint_track: string; total_points: number }[] = []
 
 	if (allMemberSubmissions) {
-		const scoresMap = new Map<string, any>()
+		const scoresMap = new Map<string, any>();
 
 		(allMemberSubmissions as any[]).forEach((sub) => {
 			const p = sub.profiles as any
