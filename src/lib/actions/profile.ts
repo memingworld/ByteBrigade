@@ -20,11 +20,13 @@ export async function updateProfile(formData: FormData) {
   // But user just asked to change settings such as department etc.
   
   // @ts-ignore
-  const { error } = await supabase.from("profiles").update({
+  const { error } = await supabase.from("profiles").upsert({
+    id: user.id,
+    team_id: "f876de5d-4ada-4e24-bc97-bba3408d82f2",
     full_name: fullName,
     department,
     sprint_track: sprintTrack || null
-  } as any).eq("id", user.id)
+  } as any)
 
   if (error) {
     return { error: error.message }

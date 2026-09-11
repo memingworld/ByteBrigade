@@ -16,19 +16,7 @@ export default async function SettingsPage() {
     .eq("id", user.id)
     .single()
     
-  const profile = _profile as any
-
-  if (!profile) {
-    return (
-      <div className="container py-10 font-mono text-matrix-green">
-        <h1 className="text-2xl font-bold mb-6">/etc/profile</h1>
-        <div className="p-4 border border-red-500 text-red-500 bg-red-900/20">
-          FATAL ERROR: Profile record not found in database. 
-          Are you sure you bypassed the email confirmation?
-        </div>
-      </div>
-    )
-  }
+  const profile = _profile || {}
 
   return (
     <div className="container max-w-2xl py-10">
