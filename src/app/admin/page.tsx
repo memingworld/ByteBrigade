@@ -12,7 +12,7 @@ export default async function AdminPage() {
   }
 
   // Authorize User
-  const { data: _userRole } = await supabase
+  const { data: _userRole, error: roleError } = await supabase
     .from("user_roles")
     .select("role")
     .eq("user_id", user.id)
@@ -28,6 +28,14 @@ export default async function AdminPage() {
             <AlertTriangle className="h-16 w-16 mb-4 animate-pulse" />
             <h1 className="text-4xl font-bold mb-4 glitch-hover">ACCESS DENIED</h1>
             <p className="text-xl mb-6 tracking-widest">UNAUTHORIZED ROOT ATTEMPT LOGGED.</p>
+            
+            <div className="bg-red-900/20 border border-red-500/50 p-4 mb-6 text-left w-full text-xs">
+              <p className="text-red-500 font-bold mb-2">&gt; DEBUG_DIAGNOSTICS:</p>
+              <p>USER_ID: {user.id}</p>
+              <p>DB_ROLE_RETURNED: {JSON.stringify(userRole || "NULL")}</p>
+              {roleError && <p>DB_ERROR: {roleError.message}</p>}
+            </div>
+
             <p className="text-sm opacity-70 mb-8">
               Your IP address and hardware ID have been recorded and reported to the system administrator.
               Only CORE and LEAD operatives may access this terminal.
