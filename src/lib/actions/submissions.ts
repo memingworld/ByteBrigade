@@ -25,7 +25,8 @@ export async function submitActivity(formData: FormData) {
   const title = formData.get("title") as string
   const details = formData.get("details") as string
   const externalUrl = formData.get("externalUrl") as string
-  const file = formData.get("proofFile") as File
+  const files = formData.getAll("proofFiles") as File[]
+  const validFiles = files.filter(f => f && f.size > 0)
 
   if (!activityId || !occurredOnStr || !title || !details) {
     return { error: "INVALID_INPUT: Missing required payload fields." }
@@ -52,6 +53,20 @@ export async function submitActivity(formData: FormData) {
   }
   const occurredOn = occurredOnDate.toISOString()
 
+  if (validFiles.length === 0) {
+    return { error: "INVALID_INPUT: At least 1 evidence file is strictly required." }
+  }
+
+  if (validFiles.length > 3) {
+    return { error: "INVALID_INPUT: Maximum 3 evidence files allowed." }
+  }
+
+  for (const file of validFiles) {
+    if (file.size > 10 * 1024 * 1024) {
+      return { error: `FILE_TOO_LARGE: Evidence file ${file.name} exceeds 10MB limit.` }
+    }
+  }
+
   // Insert submission
   // @ts-ignore
   const { data: _submission, error: subError } = await supabase.from("submissions").insert({
@@ -71,12 +86,8 @@ export async function submitActivity(formData: FormData) {
     return { error: `DB_ERROR: ${subError?.message || 'Unknown insertion error'}` }
   }
 
-  // Handle file upload if present
-  if (file && file.size > 0) {
-    if (file.size > 10 * 1024 * 1024) {
-      return { error: "FILE_TOO_LARGE: Evidence exceeds 10MB limit" }
-    }
-    
+  // Handle multiple file uploads
+  for (const file of validFiles) {
     const fileExt = file.name.split(".").pop()
     const fileName = `${submission.id}-${Math.random()}.${fileExt}`
     const filePath = `${user.id}/${fileName}`
@@ -87,7 +98,7 @@ export async function submitActivity(formData: FormData) {
 
     if (uploadError) {
       console.error("Upload error:", uploadError)
-      return { error: `UPLOAD_ERROR: ${uploadError.message}` }
+      return { error: `UPLOAD_ERROR on ${file.name}: ${uploadError.message}` }
     }
 
     // Record proof
@@ -102,7 +113,7 @@ export async function submitActivity(formData: FormData) {
     } as any)
 
     if (proofInsertError) {
-      return { error: `PROOF_DB_ERROR: ${proofInsertError.message}` }
+      return { error: `PROOF_DB_ERROR for ${file.name}: ${proofInsertError.message}` }
     }
   }
 

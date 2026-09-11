@@ -12,7 +12,7 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
   const [message, setMessage] = useState("")
   const [selectedActivityId, setSelectedActivityId] = useState("")
 
-  const [fileName, setFileName] = useState("")
+  const [fileNames, setFileNames] = useState<string[]>([])
   
   const selectedActivity = catalog.find(c => c.id === selectedActivityId)
 
@@ -24,7 +24,7 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
       setMessage(res.error)
     } else {
       setMessage("UPLINK_SUCCESS: Activity logged.")
-      setFileName("")
+      setFileNames([])
     }
     setLoading(false)
   }
@@ -88,47 +88,63 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="proofFile" className="text-matrix-green">&gt; attach_evidence_file</Label>
-        <div className={`border border-dashed transition-colors p-8 text-center relative cursor-pointer group ${fileName ? 'border-matrix-green bg-matrix-green/20' : 'border-matrix-green/50 bg-matrix-green/5 hover:bg-matrix-green/10'}`}>
+        <Label htmlFor="proofFiles" className="text-matrix-green">&gt; attach_evidence_files [1-3 required]</Label>
+        <div className={`border border-dashed transition-colors p-8 text-center relative cursor-pointer group ${fileNames.length > 0 ? 'border-matrix-green bg-matrix-green/20' : 'border-matrix-green/50 bg-matrix-green/5 hover:bg-matrix-green/10'}`}>
           <Input 
             type="file" 
-            name="proofFile" 
+            name="proofFiles" 
+            multiple
+            required
             accept="image/jpeg,image/png,image/webp,application/pdf"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
             onChange={(e) => {
-              const file = e.target.files?.[0]
-              if (file) {
-                if (file.size > 10 * 1024 * 1024) {
-                  setMessage("FILE_TOO_LARGE: Max evidence size is 10MB")
-                  e.target.value = ""
-                  setFileName("")
-                } else {
-                  setFileName(file.name)
-                  setMessage("")
-                }
-              } else {
-                setFileName("")
+              const files = Array.from(e.target.files || [])
+              if (files.length > 3) {
+                setMessage("MAX_FILES_EXCEEDED: Maximum 3 evidence files allowed.")
+                e.target.value = ""
+                setFileNames([])
+                return
               }
+              const valid = files.every(f => f.size <= 10 * 1024 * 1024)
+              if (!valid) {
+                setMessage("FILE_TOO_LARGE: Max evidence size is 10MB per file")
+                e.target.value = ""
+                setFileNames([])
+                return
+              }
+              setFileNames(files.map(f => f.name))
+              setMessage("")
             }}
           />
           <UploadCloud className="w-8 h-8 text-matrix-green mx-auto mb-2 group-hover:scale-110 transition-transform" />
           
-          {fileName ? (
+          {fileNames.length > 0 ? (
             <div>
-              <p className="font-bold text-sm text-matrix-green tracking-widest">EVIDENCE_ACQUIRED</p>
-              <p className="text-xs text-matrix-green mt-1">{fileName}</p>
+              <p className="font-bold text-sm text-matrix-green tracking-widest">EVIDENCE_ACQUIRED ({fileNames.length}/3)</p>
+              <div className="text-xs text-matrix-green mt-2 space-y-1">
+                {fileNames.map((name, i) => (
+                  <p key={i}>[{i + 1}] {name}</p>
+                ))}
+              </div>
             </div>
           ) : (
             <div>
               <p className="font-bold text-sm text-matrix-green tracking-widest">DRAG_AND_DROP_EVIDENCE</p>
-              <p className="text-xs text-matrix-green/50 mt-1">or click to browse local filesystem</p>
+              <p className="text-xs text-matrix-green/50 mt-1">Select 1 to 3 files (local filesystem)</p>
             </div>
           )}
         </div>
       </div>
 
-      <Button type="submit" className="w-full h-12 bg-matrix-green text-matrix-dark font-bold hover:bg-white transition-colors tracking-widest rounded-none uppercase" disabled={loading}>
-        {loading ? "TRANSMITTING_PAYLOAD..." : "EXECUTE_INJECTION"}
+      <Button type="submit" className="w-full h-12 bg-matrix-green text-matrix-dark font-bold hover:bg-white transition-colors tracking-widest rounded-none uppercase relative overflow-hidden" disabled={loading}>
+        {loading ? (
+          <span className="flex items-center justify-center gap-2">
+            UPLOADING TO DB [||||||||||||||||||]
+            <span className="animate-pulse">_</span>
+          </span>
+        ) : (
+          "EXECUTE_INJECTION"
+        )}
       </Button>
 
       {message && (
