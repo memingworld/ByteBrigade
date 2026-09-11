@@ -30,7 +30,7 @@ export default async function DashboardPage() {
 		
 	const allMemberSubmissions = (_allMemberSubmissions as any[]) || []
 
-	let mvps: { member_id: string; full_name: string; sprint_track: string; total_points: number }[] = []
+	let mvps: { member_id: string; full_name: string; sprint_track: string; avatar_path: string | null; total_points: number }[] = []
 
 	const scoresMap = new Map<string, any>()
 
@@ -40,6 +40,7 @@ export default async function DashboardPage() {
 			member_id: p.id,
 			full_name: p.full_name || 'UNKNOWN_OPERATIVE',
 			sprint_track: p.sprint_track || 'UNASSIGNED',
+			avatar_path: p.avatar_path || null,
 			total_points: 0,
 		})
 	})

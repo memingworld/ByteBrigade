@@ -7,6 +7,7 @@ type MVP = {
   member_id: string;
   full_name: string;
   sprint_track: string;
+  avatar_path: string | null;
   total_points: number;
 };
 
@@ -62,8 +63,19 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
                 <div key={mvp.member_id} className="flex items-center justify-between p-2 border border-matrix-green/20 bg-matrix-dark hover:bg-matrix-green/10 transition-colors cursor-default">
                   <div className="flex items-center gap-4">
                     <span className="text-matrix-green font-bold w-6">{(index + 1).toString().padStart(2, "0")}</span>
+                    {mvp.avatar_path ? (
+                      <img 
+                        src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${mvp.avatar_path}`} 
+                        className="w-10 h-10 rounded-full object-cover border border-matrix-green/50" 
+                        alt={mvp.full_name} 
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full border border-matrix-green/50 flex items-center justify-center bg-matrix-green/10 text-matrix-green font-bold text-sm">
+                        {mvp.full_name.substring(0, 2).toUpperCase()}
+                      </div>
+                    )}
                     <div>
-                      <p className="text-matrix-green uppercase">{mvp.full_name}</p>
+                      <p className="text-matrix-green uppercase font-bold">{mvp.full_name}</p>
                       <p className="text-xs text-matrix-green/60">{mvp.sprint_track}</p>
                     </div>
                   </div>
