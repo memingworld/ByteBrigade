@@ -47,9 +47,11 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
         className="relative"
       >
         <div className="terminal-border bg-matrix-dark/90 backdrop-blur-md p-6 relative z-10" style={{ transform: "translateZ(30px)" }}>
-          <h3 className="text-xl font-bold text-matrix-green flex items-center gap-2 mb-6 border-b border-matrix-green/30 pb-2 uppercase">
-            <span className="w-2 h-2 rounded-full bg-matrix-green animate-pulse" />
-            [ MVP_LEADERBOARD ]
+          <h3 className="text-lg md:text-xl font-bold text-matrix-green flex flex-wrap items-center gap-2 mb-6 border-b border-matrix-green/30 pb-2 uppercase">
+            <span className="flex items-center gap-2 whitespace-nowrap">
+              <span className="w-2 h-2 rounded-full bg-matrix-green animate-pulse" />
+              [MVP_LEADERBOARD]
+            </span>
           </h3>
           
           <div className="space-y-2">
@@ -89,10 +91,10 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
           </div>
         </div>
 
-        <div className="terminal-border bg-matrix-dark/90 backdrop-blur-md p-6">
-          <h3 className="text-xl font-bold text-matrix-green mb-6 border-b border-matrix-green/30 pb-2 uppercase flex items-center justify-between">
-            <span>[ LIVE_NETWORK_TRAFFIC ]</span>
-            <span className="text-xs text-matrix-green/50 animate-pulse font-normal">REC/LIVE</span>
+        <div className="terminal-border bg-matrix-dark/90 backdrop-blur-md p-4 md:p-6">
+          <h3 className="text-lg md:text-xl font-bold text-matrix-green mb-6 border-b border-matrix-green/30 pb-2 uppercase flex flex-wrap gap-2 items-center justify-between">
+            <span className="whitespace-nowrap">[LIVE_NETWORK_TRAFFIC]</span>
+            <span className="text-xs text-matrix-green/50 animate-pulse font-normal whitespace-nowrap">REC/LIVE</span>
           </h3>
           
           <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
