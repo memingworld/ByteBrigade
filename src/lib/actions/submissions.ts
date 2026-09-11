@@ -21,7 +21,16 @@ export async function submitActivity(formData: FormData) {
   }
 
   const activityId = formData.get("activityId") as string
-  const occurredOn = formData.get("occurredOn") as string
+  const occurredOnStr = formData.get("occurredOn") as string
+  
+  // Fix timezone issue where "2026-09-12" parsed as UTC is technically "in the future" 
+  // relative to the DB if the user is in a timezone ahead of UTC.
+  let occurredOnDate = new Date(occurredOnStr)
+  const now = new Date()
+  if (occurredOnDate > now) {
+    occurredOnDate = now
+  }
+  const occurredOn = occurredOnDate.toISOString()
   const title = formData.get("title") as string
   const details = formData.get("details") as string
   const externalUrl = formData.get("externalUrl") as string
