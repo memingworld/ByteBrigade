@@ -94,6 +94,7 @@ export async function submitActivity(formData: FormData) {
     // @ts-ignore
     const { error: proofInsertError } = await supabase.from("submission_proofs").insert({
       submission_id: submission.id,
+      team_id: profile.team_id,
       storage_path: filePath,
       file_name: file.name,
       mime_type: file.type,
