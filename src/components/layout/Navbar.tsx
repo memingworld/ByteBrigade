@@ -3,6 +3,7 @@ import { Terminal, Grid, UploadCloud, ShieldAlert, Settings, LogOut } from "luci
 
 export default function Navbar() {
   return (
+    <>
     <header className="sticky top-0 z-50 w-full border-b border-matrix-green/30 bg-matrix-dark/90 backdrop-blur">
       <div className="container flex h-14 items-center justify-between">
         <div className="hidden md:flex flex-1 items-center">
@@ -71,27 +72,29 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-matrix-green/30 bg-matrix-dark/90 backdrop-blur pb-safe">
-        <div className="flex justify-around items-center h-16 font-mono">
-          <Link href="/dashboard" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
-            <Grid className="w-5 h-5 mb-1" />
-            <span className="text-[10px]">[MATRIX]</span>
-          </Link>
-          <Link href="/submit" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
-            <UploadCloud className="w-5 h-5 mb-1" />
-            <span className="text-[10px]">[PAYLOAD]</span>
-          </Link>
-          <Link href="/admin" className="flex flex-col items-center justify-center w-full h-full text-red-500/70 hover:text-red-500">
-            <ShieldAlert className="w-5 h-5 mb-1" />
-            <span className="text-[10px]">[ROOT]</span>
-          </Link>
-          <Link href="/settings" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
-            <Settings className="w-5 h-5 mb-1" />
-            <span className="text-[10px]">[PREFS]</span>
-          </Link>
-        </div>
-      </nav>
     </header>
+    
+    {/* Mobile Bottom Nav - Placed OUTSIDE the sticky header to ensure it stays fixed at bottom of viewport */}
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[100] border-t border-matrix-green/30 bg-matrix-dark/95 backdrop-blur-md pb-safe">
+      <div className="flex justify-around items-center h-16 font-mono">
+        <Link href="/dashboard" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
+          <Grid className="w-5 h-5 mb-1" />
+          <span className="text-[10px]">[MATRIX]</span>
+        </Link>
+        <Link href="/submit" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
+          <UploadCloud className="w-5 h-5 mb-1" />
+          <span className="text-[10px]">[PAYLOAD]</span>
+        </Link>
+        <Link href="/admin" className="flex flex-col items-center justify-center w-full h-full text-red-500/70 hover:text-red-500">
+          <ShieldAlert className="w-5 h-5 mb-1" />
+          <span className="text-[10px]">[ROOT]</span>
+        </Link>
+        <Link href="/settings" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
+          <Settings className="w-5 h-5 mb-1" />
+          <span className="text-[10px]">[PREFS]</span>
+        </Link>
+      </div>
+    </nav>
+    </>
   );
 }

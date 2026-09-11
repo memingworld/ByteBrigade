@@ -11,16 +11,21 @@ export const metadata: Metadata = {
   description: "Terminal Access",
 };
 
-export default function RootLayout({
+import { createClient } from "@/lib/supabase/server";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <html lang="en" className="dark">
       <body className={`${vt323.variable} font-mono min-h-screen bg-matrix-dark text-matrix-green antialiased`}>
         <div className="relative flex min-h-screen flex-col">
-          <Navbar />
+          {user && <Navbar />}
           <div className="flex-1 z-10 relative">
             {children}
           </div>
