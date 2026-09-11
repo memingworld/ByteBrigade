@@ -27,10 +27,10 @@ export default async function SubmitPage() {
     .order("submitted_at", { ascending: false })
 
   return (
-    <div className="container py-8 flex flex-col lg:flex-row gap-8">
+    <div className="container py-8 flex flex-col lg:flex-row gap-8 font-mono">
       <div className="flex-1">
-        <h1 className="text-3xl font-bold font-mono text-cyber-cyan tracking-wider mb-6 glitch-hover">UPLINK_PORTAL</h1>
-        <Card className="bg-background/80 backdrop-blur">
+        <h1 className="text-3xl font-bold text-matrix-green tracking-wider mb-6 glitch-hover">/bin/inject_payload</h1>
+        <Card className="bg-matrix-dark/80 backdrop-blur terminal-border">
           <CardContent className="pt-6">
             <SubmissionForm catalog={catalog || []} />
           </CardContent>
@@ -38,8 +38,8 @@ export default async function SubmitPage() {
       </div>
 
       <div className="flex-1">
-        <h2 className="text-xl font-bold font-mono text-muted-foreground tracking-wider mb-6">TRANSMISSION_LOGS</h2>
-        <Card className="bg-background/80 backdrop-blur">
+        <h2 className="text-xl font-bold text-matrix-green/70 tracking-wider mb-6">[ TRANSMISSION_LOGS ]</h2>
+        <Card className="bg-matrix-dark/80 backdrop-blur terminal-border">
           <CardContent className="p-0">
             <SubmissionHistory submissions={(submissions as any[]) || []} />
           </CardContent>

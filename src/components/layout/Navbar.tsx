@@ -17,26 +17,35 @@ export default function Navbar() {
               href="/dashboard"
               className="transition-colors hover:text-matrix-green text-matrix-green/70 flex items-center gap-2"
             >
-              [ THE_GRID ]
+              [ THE_MATRIX ]
             </Link>
             <Link
               href="/submit"
               className="transition-colors hover:text-matrix-green text-matrix-green/70 flex items-center gap-2"
             >
-              [ UPLINK ]
+              [ INJECT_PAYLOAD ]
             </Link>
             <Link
               href="/admin"
               className="transition-colors hover:text-red-500 text-red-500/70 flex items-center gap-2"
             >
-              [ CMD_CENTER ]
+              [ ROOT_ACCESS ]
             </Link>
             <Link
               href="/settings"
               className="transition-colors hover:text-matrix-green text-matrix-green/70 flex items-center gap-2"
             >
-              [ SETTINGS ]
+              [ SYS_PREFS ]
             </Link>
+            <form action={async () => {
+              "use server"
+              const { logout } = await import("@/lib/actions/auth")
+              await logout()
+            }}>
+              <button type="submit" className="transition-colors hover:text-red-500 text-matrix-green/70 flex items-center gap-2 uppercase">
+                [ DISCONNECT ]
+              </button>
+            </form>
           </nav>
         </div>
         
@@ -51,17 +60,24 @@ export default function Navbar() {
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-matrix-green/30 bg-matrix-dark/90 backdrop-blur pb-safe">
         <div className="flex justify-around items-center h-16 font-mono">
           <Link href="/dashboard" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
-            <span className="text-xs">[GRID]</span>
+            <span className="text-xs">[MATRIX]</span>
           </Link>
           <Link href="/submit" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
-            <span className="text-xs">[UPLINK]</span>
+            <span className="text-xs">[PAYLOAD]</span>
           </Link>
           <Link href="/admin" className="flex flex-col items-center justify-center w-full h-full text-red-500/70 hover:text-red-500">
-            <span className="text-xs">[CMD]</span>
+            <span className="text-xs">[ROOT]</span>
           </Link>
           <Link href="/settings" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
-            <span className="text-xs">[SET]</span>
+            <span className="text-xs">[PREFS]</span>
           </Link>
+          <form action={async () => {
+            "use server"
+            const { logout } = await import("@/lib/actions/auth")
+            await logout()
+          }} className="flex flex-col items-center justify-center w-full h-full text-red-500/70 hover:text-red-500">
+            <button type="submit" className="text-xs">[EXIT]</button>
+          </form>
         </div>
       </nav>
     </header>
