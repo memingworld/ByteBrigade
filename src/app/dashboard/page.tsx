@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import HeroSection from '@/components/dashboard/HeroSection'
 import ScoreBoard from '@/components/dashboard/ScoreBoard'
 
@@ -14,12 +15,13 @@ async function DashboardContent() {
 	}
 
 	// Fetch user's team
-	const { data: profile } = await supabase
+	const { data: _profile } = await supabase
 		.from("profiles")
 		.select("team_id")
 		.eq("id", user.id)
 		.single()
 
+	const profile = _profile as any;
 	const TEAM_ID = profile?.team_id
 
 	if (!TEAM_ID) {

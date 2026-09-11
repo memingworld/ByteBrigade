@@ -46,12 +46,13 @@ async function AdminContent() {
   }
 
   // Fetch the admin's team_id dynamically
-  const { data: profile } = await supabase
+  const { data: _profile } = await supabase
     .from("profiles")
     .select("team_id")
     .eq("id", user.id)
     .single()
 
+  const profile = _profile as any;
   const adminTeamId = profile?.team_id;
 
   if (!adminTeamId) {
