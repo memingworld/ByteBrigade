@@ -18,6 +18,21 @@ export async function updateProfile(formData: FormData) {
   const enrollmentNo = formData.get("enrollmentNo") as string
   const file = formData.get("avatarFile") as File
   
+  if (!fullName || !fullName.trim()) return { error: "INVALID_INPUT: Name is strictly required." }
+  if (enrollmentNo && !/^\d+$/.test(enrollmentNo)) {
+    return { error: "INVALID_INPUT: Enrollment number must contain only numerical digits." }
+  }
+
+  const validDepartments = ["Technical", "Event Management", "R&D", "Social", "Design", "PR"]
+  if (!validDepartments.includes(department)) {
+    return { error: "INVALID_INPUT: Unauthorized department selected." }
+  }
+
+  const validTracks = ["", "code", "open_source", "build", "pitch"]
+  if (!validTracks.includes(sprintTrack)) {
+    return { error: "INVALID_INPUT: Unauthorized sprint track selected." }
+  }
+
   let avatarPath = null;
   
   // Handle avatar upload

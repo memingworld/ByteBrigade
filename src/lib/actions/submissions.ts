@@ -22,19 +22,35 @@ export async function submitActivity(formData: FormData) {
 
   const activityId = formData.get("activityId") as string
   const occurredOnStr = formData.get("occurredOn") as string
-  
-  // Fix timezone issue where "2026-09-12" parsed as UTC is technically "in the future" 
-  // relative to the DB if the user is in a timezone ahead of UTC.
+  const title = formData.get("title") as string
+  const details = formData.get("details") as string
+  const externalUrl = formData.get("externalUrl") as string
+  const file = formData.get("proofFile") as File
+
+  if (!activityId || !occurredOnStr || !title || !details) {
+    return { error: "INVALID_INPUT: Missing required payload fields." }
+  }
+
+  if (externalUrl) {
+    try {
+      new URL(externalUrl)
+    } catch (e) {
+      return { error: "INVALID_INPUT: externalUrl must be a valid strictly formatted URL." }
+    }
+  }
+
+  // Enforce DB constraint: occurred_on cannot be in the future
   let occurredOnDate = new Date(occurredOnStr)
+  
+  if (isNaN(occurredOnDate.getTime())) {
+    return { error: "INVALID_INPUT: Date format is corrupted." }
+  }
+
   const now = new Date()
   if (occurredOnDate > now) {
     occurredOnDate = now
   }
   const occurredOn = occurredOnDate.toISOString()
-  const title = formData.get("title") as string
-  const details = formData.get("details") as string
-  const externalUrl = formData.get("externalUrl") as string
-  const file = formData.get("proofFile") as File
 
   // Insert submission
   // @ts-ignore

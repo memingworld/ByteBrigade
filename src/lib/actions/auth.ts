@@ -30,6 +30,27 @@ export async function signup(formData: FormData) {
   const sprintTrack = formData.get("sprintTrack") as string
   const enrollmentNo = formData.get("enrollmentNo") as string
 
+  // Strict Validation
+  if (!email || !password || !fullName || !department || !sprintTrack || !enrollmentNo) {
+    return redirect("/signup?message=All fields are strictly required.")
+  }
+
+  if (!/^\d+$/.test(enrollmentNo)) {
+    return redirect("/signup?message=INVALID_INPUT: Enrollment number must contain only numerical digits.")
+  }
+
+  const validDepartments = ["Technical", "Event Management", "R&D", "Social", "Design", "PR"]
+  if (!validDepartments.includes(department)) {
+    return redirect("/signup?message=INVALID_INPUT: Unauthorized department selected.")
+  }
+
+  const validTracks = ["code", "open_source", "build", "pitch"]
+  if (!validTracks.includes(sprintTrack)) {
+    return redirect("/signup?message=INVALID_INPUT: Unauthorized sprint track selected.")
+  }
+
+  const supabase = createClient()
+
   // 1. Create the user in Auth
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,

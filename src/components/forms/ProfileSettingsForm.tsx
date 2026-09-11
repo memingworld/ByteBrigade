@@ -88,6 +88,10 @@ export default function ProfileSettingsForm({ profile, userEmail }: { profile: a
         <input
           className="w-full bg-matrix-dark border border-matrix-green/50 focus:border-matrix-green outline-none p-2"
           name="enrollmentNo"
+          type="text"
+          inputMode="numeric"
+          pattern="\d+"
+          title="Must contain only numbers"
           defaultValue={profile.enrollment_no || ""}
           required
         />

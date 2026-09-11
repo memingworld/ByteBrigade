@@ -49,6 +49,10 @@ export default function SignupPage({
             <input
               className="w-full bg-transparent border-b border-matrix-green/50 focus:border-matrix-green outline-none text-matrix-green"
               name="enrollmentNo"
+              type="text"
+              inputMode="numeric"
+              pattern="\d+"
+              title="Must contain only numbers"
               placeholder="0123456789"
               required
             />
