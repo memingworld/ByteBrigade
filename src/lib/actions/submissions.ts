@@ -43,7 +43,7 @@ export async function submitActivity(formData: FormData) {
 
   if (subError || !submission) {
     console.error("Submission error:", subError)
-    return { error: "Failed to submit activity" }
+    return { error: `DB_ERROR: ${subError?.message || 'Unknown insertion error'}` }
   }
 
   // Handle file upload if present
@@ -58,18 +58,22 @@ export async function submitActivity(formData: FormData) {
 
     if (uploadError) {
       console.error("Upload error:", uploadError)
-      return { error: "Failed to upload proof" }
+      return { error: `UPLOAD_ERROR: ${uploadError.message}` }
     }
 
     // Record proof
     // @ts-ignore
-    await supabase.from("submission_proofs").insert({
+    const { error: proofInsertError } = await supabase.from("submission_proofs").insert({
       submission_id: submission.id,
       storage_path: filePath,
       file_name: file.name,
       mime_type: file.type,
       size_bytes: file.size
     } as any)
+
+    if (proofInsertError) {
+      return { error: `PROOF_DB_ERROR: ${proofInsertError.message}` }
+    }
   }
 
   revalidatePath("/submit")
