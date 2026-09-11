@@ -1,4 +1,5 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr"`nimport { Database } from "./database.types"
+import { createServerClient, type CookieOptions } from "@supabase/ssr"
+import { Database } from "./database.types"
 import { cookies } from "next/headers"
 
 export function createClient() {

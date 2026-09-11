@@ -1,4 +1,5 @@
-import { createServerClient } from "@supabase/ssr"`nimport { Database } from "./database.types"
+import { createServerClient } from "@supabase/ssr"
+import { Database } from "./database.types"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function updateSession(request: NextRequest) {
