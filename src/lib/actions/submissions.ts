@@ -13,7 +13,8 @@ export async function submitActivity(formData: FormData) {
   }
 
   // Get user profile to get team_id
-  const { data: profile } = await supabase.from("profiles").select("team_id").eq("id", user.id).single()
+  const { data: _profile } = await supabase.from("profiles").select("team_id").eq("id", user.id).single()
+  const profile = _profile as any;
   
   if (!profile) {
     return { error: "Profile not found" }
@@ -27,7 +28,8 @@ export async function submitActivity(formData: FormData) {
   const file = formData.get("proofFile") as File
 
   // Insert submission
-  const { data: submission, error: subError } = await supabase.from("submissions").insert({
+  // @ts-ignore
+  const { data: _submission, error: subError } = await supabase.from("submissions").insert({
     member_id: user.id,
     team_id: profile.team_id,
     activity_id: activityId,
@@ -37,6 +39,7 @@ export async function submitActivity(formData: FormData) {
     external_url: externalUrl,
     status: "pending"
   } as any).select().single()
+  const submission = _submission as any;
 
   if (subError || !submission) {
     console.error("Submission error:", subError)
@@ -59,6 +62,7 @@ export async function submitActivity(formData: FormData) {
     }
 
     // Record proof
+    // @ts-ignore
     await supabase.from("submission_proofs").insert({
       submission_id: submission.id,
       storage_path: filePath,

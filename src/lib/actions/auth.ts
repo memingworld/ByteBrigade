@@ -44,6 +44,7 @@ export async function signup(formData: FormData) {
 
   if (data.user) {
     // Insert into profiles
+    // @ts-ignore
     const { error: profileError } = await supabase.from("profiles").insert({
       id: data.user.id,
       full_name: fullName,

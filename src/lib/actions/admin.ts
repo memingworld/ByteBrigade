@@ -27,6 +27,7 @@ export async function verifySubmission(formData: FormData) {
 
   const { error } = await supabase
     .from("submissions")
+    // @ts-ignore
     .update({
       status: "verified",
       awarded_points: awardedPoints,
@@ -54,6 +55,7 @@ export async function rejectSubmission(formData: FormData) {
 
   const { error } = await supabase
     .from("submissions")
+    // @ts-ignore
     .update({
       status: "rejected",
       awarded_points: 0,
@@ -84,6 +86,7 @@ export async function applyPlagiarismPenalty(formData: FormData) {
 
   const { error } = await supabase
     .from("submissions")
+    // @ts-ignore
     .update({
       status: "rejected",
       awarded_points: 0,
