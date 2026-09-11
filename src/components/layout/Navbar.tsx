@@ -33,12 +33,6 @@ export default function Navbar() {
               <ShieldAlert className="w-4 h-4" /> [ ROOT_ACCESS ]
             </Link>
             <Link
-              href="/team"
-              className="transition-colors hover:text-matrix-green text-matrix-green/70 flex items-center gap-2"
-            >
-              <Users className="w-4 h-4" /> [ OPERATIVES ]
-            </Link>
-            <Link
               href="/settings"
               className="transition-colors hover:text-matrix-green text-matrix-green/70 flex items-center gap-2"
             >
@@ -94,10 +88,6 @@ export default function Navbar() {
         <Link href="/admin" className="flex flex-col items-center justify-center w-full h-full text-red-500/70 hover:text-red-500">
           <ShieldAlert className="w-5 h-5 mb-1" />
           <span className="text-[10px]">[ROOT]</span>
-        </Link>
-        <Link href="/team" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
-          <Users className="w-5 h-5 mb-1" />
-          <span className="text-[10px]">[TEAM]</span>
         </Link>
         <Link href="/settings" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
           <Settings className="w-5 h-5 mb-1" />
