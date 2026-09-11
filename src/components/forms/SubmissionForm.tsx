@@ -48,9 +48,9 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
                 acc[cat].push(c);
                 return acc;
               }, {} as Record<string, any[]>)
-            ).map(([category, items]: [string, any[]]) => (
+            ).map(([category, items]) => (
               <optgroup key={category} label={`[ ${category.toUpperCase()} ]`} className="bg-matrix-dark text-matrix-green/70">
-                {items.map((c: any) => (
+                {(items as any[]).map((c: any) => (
                   <option key={c.id} value={c.id} className="text-matrix-green">
                     {c.label}{c.level ? ` — ${c.level}` : ''} ({c.points} PTS)
                   </option>
