@@ -3,7 +3,10 @@ import { redirect } from "next/navigation"
 import AdminVerificationTable from "@/components/dashboard/AdminVerificationTable"
 import { AlertTriangle } from "lucide-react"
 
-export default async function AdminPage() {
+import { Suspense } from 'react'
+import Loading from '../loading'
+
+async function AdminContent() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -63,5 +66,13 @@ export default async function AdminPage() {
         <AdminVerificationTable submissions={(pendingSubmissions as any[]) || []} />
       </div>
     </div>
+  )
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <AdminContent />
+    </Suspense>
   )
 }

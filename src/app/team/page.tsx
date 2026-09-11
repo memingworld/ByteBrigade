@@ -1,7 +1,10 @@
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 
-export default async function TeamPage() {
+import { Suspense } from 'react'
+import Loading from '../loading'
+
+async function TeamContent() {
   const supabase = createClient()
   
   // We don't strictly need auth for this page if they want it public,
@@ -64,5 +67,13 @@ export default async function TeamPage() {
         })}
       </div>
     </div>
+  )
+}
+
+export default function TeamPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <TeamContent />
+    </Suspense>
   )
 }

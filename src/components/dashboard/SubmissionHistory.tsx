@@ -27,6 +27,11 @@ export default function SubmissionHistory({ submissions }: { submissions: any[] 
                 <td className="px-4 py-3">
                   <p className="font-bold">{sub.title}</p>
                   <p className="text-xs text-matrix-green/70">{sub.activity_catalog?.label}</p>
+                  {sub.decision_note && (
+                    <p className={`text-[10px] mt-1 ${sub.status === 'rejected' ? 'text-red-400' : 'text-matrix-green/80'}`}>
+                      &gt; {sub.decision_note}
+                    </p>
+                  )}
                 </td>
                 <td className="px-4 py-3 font-bold">
                   {sub.status === "verified" ? (

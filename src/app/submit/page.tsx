@@ -4,7 +4,10 @@ import SubmissionForm from "@/components/forms/SubmissionForm"
 import SubmissionHistory from "@/components/dashboard/SubmissionHistory"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-export default async function SubmitPage() {
+import { Suspense } from 'react'
+import Loading from '../loading'
+
+async function SubmitContent() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -46,5 +49,13 @@ export default async function SubmitPage() {
         </Card>
       </div>
     </div>
+  )
+}
+
+export default function SubmitPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <SubmitContent />
+    </Suspense>
   )
 }
