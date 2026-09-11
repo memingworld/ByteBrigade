@@ -1,68 +1,114 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { signup } from "@/lib/actions/auth"
+import MatrixRain from "@/components/ui/MatrixRain"
 
-export default function Signup({ searchParams }: { searchParams: { message: string } }) {
+export default function SignupPage({
+  searchParams,
+}: {
+  searchParams: { message: string }
+}) {
   return (
-    <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2 mx-auto min-h-[calc(100vh-3.5rem)] py-10">
-      <div className="flex flex-col mb-8 text-center">
-        <h1 className="text-4xl font-bold font-mono text-cyber-cyan tracking-wider glitch-hover mb-2">NEW_OPERATIVE</h1>
-        <p className="text-muted-foreground font-mono text-xs uppercase tracking-widest">Enrollment Protocol</p>
-      </div>
+    <div className="min-h-[calc(100vh-3.5rem)] flex items-center justify-center relative px-4 py-8">
+      <MatrixRain />
+      <div className="w-full max-w-md bg-matrix-dark/80 backdrop-blur-md p-8 terminal-border relative z-10">
+        <div className="mb-6 font-mono">
+          <p className="text-matrix-green mb-2">Initializing Operator Registration...</p>
+          <h1 className="text-2xl font-bold text-matrix-green animate-pulse">
+            root@byte-brigade:~# adduser
+          </h1>
+        </div>
 
-      <form className="flex-1 flex flex-col w-full justify-center gap-6" action={signup}>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input name="email" placeholder="agent@bytebrigade.com" required />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="password">Password</Label>
-          <Input type="password" name="password" placeholder="••••••••" required />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="fullName">Full Name</Label>
-          <Input name="fullName" placeholder="Motoko Kusanagi" required />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="department">Department</Label>
-          <select name="department" className="flex h-10 w-full rounded-none border border-input bg-background/50 px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-cyan font-mono" required>
-            <option value="">Select Dept</option>
-            <option value="Engineering">Engineering</option>
-            <option value="Design">Design</option>
-            <option value="Product">Product</option>
-          </select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="sprintTrack">Sprint Track</Label>
-          <select name="sprintTrack" className="flex h-10 w-full rounded-none border border-input bg-background/50 px-3 py-2 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyber-cyan font-mono" required>
-            <option value="">Select Track</option>
-            <option value="Code">Code</option>
-            <option value="Open Source">Open Source</option>
-            <option value="Build">Build</option>
-            <option value="Pitch">Pitch</option>
-          </select>
-        </div>
-        
-        <Button variant="cyber" className="mt-4 w-full h-12">
-          EXECUTE_REGISTRATION
-        </Button>
-        
-        {searchParams?.message && (
-          <p className="mt-4 p-4 bg-destructive/10 text-cyber-magenta text-center font-mono text-sm border border-cyber-magenta">
-            {searchParams.message}
-          </p>
-        )}
-      </form>
-      
-      <div className="text-center mt-8">
-        <p className="text-sm text-muted-foreground font-mono">
-          Already enrolled?{" "}
-          <Link href="/login" className="text-cyber-cyan hover:underline">
-            Authenticate
-          </Link>
-        </p>
+        <form className="flex-1 flex flex-col w-full justify-center gap-4" action={signup}>
+          <div className="font-mono text-matrix-green">
+            <label className="block mb-1 text-sm" htmlFor="fullName">
+              &gt; input_name
+            </label>
+            <input
+              className="w-full bg-transparent border-b border-matrix-green/50 focus:border-matrix-green outline-none text-matrix-green"
+              name="fullName"
+              placeholder="Neo"
+              required
+            />
+          </div>
+
+          <div className="font-mono text-matrix-green">
+            <label className="block mb-1 text-sm" htmlFor="email">
+              &gt; input_email
+            </label>
+            <input
+              className="w-full bg-transparent border-b border-matrix-green/50 focus:border-matrix-green outline-none text-matrix-green"
+              name="email"
+              placeholder="neo@thematrix.com"
+              required
+            />
+          </div>
+          
+          <div className="font-mono text-matrix-green">
+            <label className="block mb-1 text-sm" htmlFor="password">
+              &gt; input_password
+            </label>
+            <input
+              className="w-full bg-transparent border-b border-matrix-green/50 focus:border-matrix-green outline-none text-matrix-green"
+              type="password"
+              name="password"
+              placeholder="••••••••••••"
+              required
+            />
+          </div>
+
+          <div className="font-mono text-matrix-green">
+            <label className="block mb-1 text-sm" htmlFor="department">
+              &gt; select_department
+            </label>
+            <select
+              className="w-full bg-matrix-dark border border-matrix-green/50 focus:border-matrix-green outline-none text-matrix-green p-2 appearance-none"
+              name="department"
+              required
+            >
+              <option value="">-- SELECT SECTOR --</option>
+              <option value="Technical">Technical</option>
+              <option value="Event Management">Event Management</option>
+              <option value="R&D">R&D</option>
+              <option value="Social">Social</option>
+              <option value="Design">Design</option>
+              <option value="PR">PR</option>
+            </select>
+          </div>
+
+          <div className="font-mono text-matrix-green">
+            <label className="block mb-1 text-sm" htmlFor="sprintTrack">
+              &gt; select_sprint_track
+            </label>
+            <select
+              className="w-full bg-matrix-dark border border-matrix-green/50 focus:border-matrix-green outline-none text-matrix-green p-2 appearance-none"
+              name="sprintTrack"
+              required
+            >
+              <option value="">-- SELECT TRACK --</option>
+              <option value="code">CODE</option>
+              <option value="open_source">OPEN SOURCE</option>
+              <option value="build">BUILD</option>
+              <option value="pitch">PITCH</option>
+            </select>
+          </div>
+
+          <button className="bg-matrix-green text-matrix-dark font-bold font-mono py-2 px-4 mt-6 hover:bg-white hover:text-matrix-dark transition-all uppercase tracking-widest">
+            Execute / Register
+          </button>
+
+          {searchParams?.message && (
+            <p className="mt-4 p-2 bg-red-900/50 text-red-500 font-mono text-center terminal-border-red">
+              ERROR: {searchParams.message}
+            </p>
+          )}
+
+          <div className="mt-6 pt-4 border-t border-matrix-green/20 text-center">
+            <p className="text-sm text-matrix-green/70 font-mono">
+              <a href="/login" className="hover:text-matrix-green underline decoration-matrix-green/30 hover:decoration-matrix-green">
+                ABORT / RETURN TO LOGIN
+              </a>
+            </p>
+          </div>
+        </form>
       </div>
     </div>
   )

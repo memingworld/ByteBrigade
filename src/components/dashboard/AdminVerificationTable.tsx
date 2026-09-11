@@ -15,7 +15,7 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm text-left">
-        <thead className="text-xs font-mono text-cyber-cyan uppercase bg-cyber-cyan/10 border-b border-cyber-cyan">
+        <thead className="text-xs font-mono text-matrix-green uppercase bg-matrix-green/10 border-b border-matrix-green">
           <tr>
             <th className="px-4 py-3">Operative</th>
             <th className="px-4 py-3">Activity</th>
@@ -26,20 +26,20 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
         <tbody>
           {submissions.length === 0 ? (
             <tr>
-              <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground font-mono">No pending transmissions.</td>
+              <td colSpan={4} className="px-4 py-8 text-center text-matrix-green/50 font-mono">NO PENDING TRANSMISSIONS.</td>
             </tr>
           ) : (
             submissions.map((sub) => (
               <React.Fragment key={sub.id}>
-                <tr className="border-b border-border/50 hover:bg-muted/50 transition-colors">
-                  <td className="px-4 py-3 font-medium">
+                <tr className="border-b border-matrix-green/30 hover:bg-matrix-green/10 transition-colors text-matrix-green">
+                  <td className="px-4 py-3 font-medium uppercase">
                     {sub.profiles?.full_name}
                   </td>
                   <td className="px-4 py-3">
-                    <p className="font-medium text-foreground">{sub.title}</p>
-                    <p className="text-xs text-muted-foreground">{sub.activity_catalog?.label}</p>
+                    <p className="font-bold text-matrix-green">{sub.title}</p>
+                    <p className="text-xs text-matrix-green/70">{sub.activity_catalog?.label}</p>
                   </td>
-                  <td className="px-4 py-3 font-mono text-muted-foreground">
+                  <td className="px-4 py-3 font-mono text-matrix-green/70">
                     {format(new Date(sub.submitted_at), "yyyy-MM-dd HH:mm")}
                   </td>
                   <td className="px-4 py-3">
@@ -83,16 +83,16 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                           </div>
                         </div>
 
-                        <div className="border border-border/50 p-4 bg-card/50 space-y-4">
-                          <h4 className="font-mono text-cyber-cyan">DECISION_MATRIX</h4>
+                        <div className="border border-matrix-green/50 p-4 bg-matrix-dark space-y-4">
+                          <h4 className="font-mono text-matrix-green">[ DECISION_MATRIX ]</h4>
                           <form action={async (fd) => { await verifySubmission(fd) }} className="space-y-2">
                             <input type="hidden" name="submissionId" value={sub.id} />
                             <div className="flex gap-2 items-center">
-                              <Input name="awardedPoints" type="number" defaultValue={sub.activity_catalog?.points || 0} className="w-24" />
-                              <span className="text-xs font-mono text-muted-foreground">PTS TO AWARD</span>
+                              <Input name="awardedPoints" type="number" defaultValue={sub.activity_catalog?.points || 0} className="w-24 bg-matrix-dark border-matrix-green text-matrix-green" />
+                              <span className="text-xs font-mono text-matrix-green/70">PTS TO AWARD</span>
                             </div>
-                            <Input name="decisionNote" placeholder="Verification notes..." />
-                            <Button type="submit" variant="default" className="w-full h-8 text-xs bg-green-500 hover:bg-green-600 text-white border-green-500 shadow-[0_0_5px_#22c55e]">
+                            <Input name="decisionNote" placeholder="Verification notes..." className="bg-matrix-dark border-matrix-green text-matrix-green placeholder:text-matrix-green/30" />
+                            <Button type="submit" variant="default" className="w-full h-8 text-xs bg-matrix-green hover:bg-white text-matrix-dark font-bold font-mono tracking-widest">
                               VERIFY_&_AWARD
                             </Button>
                           </form>
@@ -100,14 +100,14 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                           <div className="flex gap-2">
                             <form action={async (fd) => { await rejectSubmission(fd) }} className="flex-1">
                               <input type="hidden" name="submissionId" value={sub.id} />
-                              <Button type="submit" variant="outline" className="w-full h-8 text-xs text-red-500 border-red-500 hover:bg-red-500/10 hover:text-red-400">
+                              <Button type="submit" variant="outline" className="w-full h-8 text-xs text-red-500 border-red-500 hover:bg-red-500 hover:text-black font-mono tracking-widest">
                                 REJECT
                               </Button>
                             </form>
                             <form action={async (fd) => { await applyPlagiarismPenalty(fd) }} className="flex-1">
                               <input type="hidden" name="submissionId" value={sub.id} />
                               <input type="hidden" name="basePoints" value={sub.activity_catalog?.points || 0} />
-                              <Button type="submit" variant="destructive" className="w-full h-8 text-xs flex items-center gap-1">
+                              <Button type="submit" variant="destructive" className="w-full h-8 text-xs flex items-center gap-1 font-mono tracking-widest bg-red-900 border border-red-500 text-red-500 hover:bg-red-500 hover:text-black">
                                 <AlertTriangle className="w-3 h-3" />
                                 PENALIZE (90%)
                               </Button>

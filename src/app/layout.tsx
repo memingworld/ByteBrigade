@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { VT323 } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono" });
+const vt323 = VT323({ weight: "400", subsets: ["latin"], variable: "--font-vt323" });
 
 export const metadata: Metadata = {
-  title: "Byte Brigade | Cyber Dashboard",
-  description: "Tech Sprint Journey 2026 Dashboard for Byte Brigade",
+  title: "Byte Brigade | ROOT",
+  description: "Terminal Access",
 };
 
 export default function RootLayout({
@@ -18,21 +16,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans min-h-screen bg-background antialiased`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <div className="relative flex min-h-screen flex-col">
-            <Navbar />
-            <div className="flex-1">
-              {children}
-            </div>
+    <html lang="en" className="dark">
+      <body className={`${vt323.variable} font-mono min-h-screen bg-matrix-dark text-matrix-green antialiased`}>
+        <div className="relative flex min-h-screen flex-col">
+          <Navbar />
+          <div className="flex-1 z-10 relative">
+            {children}
           </div>
-        </ThemeProvider>
+        </div>
       </body>
     </html>
   );

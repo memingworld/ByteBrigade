@@ -1,67 +1,66 @@
 import Link from "next/link";
-import { ThemeToggle } from "./ThemeToggle";
-import { Zap, LayoutGrid, Upload, ShieldAlert } from "lucide-react";
+import { Terminal } from "lucide-react";
 
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-matrix-green/30 bg-matrix-dark/90 backdrop-blur">
       <div className="container flex h-14 items-center">
-        <div className="mr-4 hidden md:flex">
+        <div className="mr-4 hidden md:flex w-full">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Zap className="h-6 w-6 text-cyber-cyan" />
-            <span className="hidden font-bold sm:inline-block font-mono tracking-wider text-cyber-cyan glitch-hover">
-              BYTE_BRIGADE
+            <Terminal className="h-6 w-6 text-matrix-green" />
+            <span className="hidden font-bold sm:inline-block font-mono tracking-wider text-matrix-green glitch-hover text-lg">
+              root@byte-brigade:~#
             </span>
           </Link>
-          <nav className="flex items-center space-x-6 text-sm font-medium">
+          <nav className="flex items-center space-x-6 text-sm font-mono flex-1">
             <Link
               href="/dashboard"
-              className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-2"
+              className="transition-colors hover:text-matrix-green text-matrix-green/70 flex items-center gap-2"
             >
-              <LayoutGrid className="w-4 h-4" />
-              THE_GRID
+              [ THE_GRID ]
             </Link>
             <Link
               href="/submit"
-              className="transition-colors hover:text-foreground/80 text-foreground/60 flex items-center gap-2"
+              className="transition-colors hover:text-matrix-green text-matrix-green/70 flex items-center gap-2"
             >
-              <Upload className="w-4 h-4" />
-              UPLINK
+              [ UPLINK ]
             </Link>
             <Link
               href="/admin"
-              className="transition-colors hover:text-cyber-magenta text-foreground/60 flex items-center gap-2"
+              className="transition-colors hover:text-red-500 text-red-500/70 flex items-center gap-2"
             >
-              <ShieldAlert className="w-4 h-4" />
-              CMD_CENTER
+              [ CMD_CENTER ]
+            </Link>
+            <Link
+              href="/settings"
+              className="transition-colors hover:text-matrix-green text-matrix-green/70 flex items-center gap-2"
+            >
+              [ SETTINGS ]
             </Link>
           </nav>
         </div>
-        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-          <div className="w-full flex-1 md:w-auto md:flex-none">
-            {/* Mobile nav placeholder */}
-            <div className="md:hidden flex items-center gap-2">
-              <Zap className="h-5 w-5 text-cyber-cyan" />
-              <span className="font-bold font-mono tracking-wider text-cyber-cyan">BB</span>
-            </div>
-          </div>
-          <ThemeToggle />
+        
+        {/* Mobile nav placeholder */}
+        <div className="md:hidden flex flex-1 items-center gap-2">
+          <Terminal className="h-5 w-5 text-matrix-green" />
+          <span className="font-bold font-mono tracking-wider text-matrix-green">root@bb:~#</span>
         </div>
       </div>
+
       {/* Mobile Bottom Nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-background/80 backdrop-blur pb-safe">
-        <div className="flex justify-around items-center h-16">
-          <Link href="/dashboard" className="flex flex-col items-center justify-center w-full h-full text-muted-foreground hover:text-cyber-cyan">
-            <LayoutGrid className="h-5 w-5" />
-            <span className="text-[10px] mt-1 font-mono">GRID</span>
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-matrix-green/30 bg-matrix-dark/90 backdrop-blur pb-safe">
+        <div className="flex justify-around items-center h-16 font-mono">
+          <Link href="/dashboard" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
+            <span className="text-xs">[GRID]</span>
           </Link>
-          <Link href="/submit" className="flex flex-col items-center justify-center w-full h-full text-muted-foreground hover:text-cyber-cyan">
-            <Upload className="h-5 w-5" />
-            <span className="text-[10px] mt-1 font-mono">UPLINK</span>
+          <Link href="/submit" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
+            <span className="text-xs">[UPLINK]</span>
           </Link>
-          <Link href="/admin" className="flex flex-col items-center justify-center w-full h-full text-muted-foreground hover:text-cyber-magenta">
-            <ShieldAlert className="h-5 w-5" />
-            <span className="text-[10px] mt-1 font-mono">CMD</span>
+          <Link href="/admin" className="flex flex-col items-center justify-center w-full h-full text-red-500/70 hover:text-red-500">
+            <span className="text-xs">[CMD]</span>
+          </Link>
+          <Link href="/settings" className="flex flex-col items-center justify-center w-full h-full text-matrix-green/70 hover:text-matrix-green">
+            <span className="text-xs">[SET]</span>
           </Link>
         </div>
       </nav>

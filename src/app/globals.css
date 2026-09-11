@@ -4,65 +4,35 @@
 
 @layer base {
   :root {
-    --background: 240 5% 96%;
-    --foreground: 240 10% 10%;
+    --background: 136 100% 2%; /* Extremely dark green/black #0d0208 */
+    --foreground: 136 100% 50%; /* #00ff41 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 10%;
+    --card: 136 100% 2%;
+    --card-foreground: 136 100% 50%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 10%;
+    --popover: 136 100% 2%;
+    --popover-foreground: 136 100% 50%;
 
-    --primary: 188 100% 50%; /* cyber cyan */
-    --primary-foreground: 240 5.9% 10%;
+    --primary: 136 100% 50%;
+    --primary-foreground: 136 100% 2%;
 
-    --secondary: 346 100% 50%; /* cyber magenta */
-    --secondary-foreground: 0 0% 98%;
+    --secondary: 136 100% 10%;
+    --secondary-foreground: 136 100% 50%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 136 100% 10%;
+    --muted-foreground: 136 100% 40%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent: 136 100% 20%;
+    --accent-foreground: 136 100% 50%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 0%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 188 100% 50%;
+    --border: 136 100% 20%;
+    --input: 136 100% 10%;
+    --ring: 136 100% 50%;
 
-    --radius: 0.1rem;
-  }
-
-  .dark {
-    --background: 0 0% 4%; /* #0a0a0a */
-    --foreground: 0 0% 98%;
-
-    --card: 0 0% 7%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 0 0% 7%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 188 100% 50%;
-    --primary-foreground: 240 5.9% 10%;
-
-    --secondary: 346 100% 50%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 188 100% 50%;
+    --radius: 0rem;
   }
 }
 
@@ -71,31 +41,64 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans relative;
-    background-image: 
-      linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px;
+    @apply bg-background text-foreground font-mono relative overflow-x-hidden;
+    text-shadow: 0 0 2px rgba(0, 255, 65, 0.5);
   }
   
-  /* Background Watermark */
+  /* CRT Scanlines */
   body::before {
-    content: "バイト旅団";
-    @apply fixed inset-0 flex items-center justify-center opacity-[0.02] text-[15vw] font-bold pointer-events-none select-none overflow-hidden z-[-1];
-    color: var(--primary);
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 50;
+    background-size: 100% 2px, 3px 100%;
+    pointer-events: none;
   }
+
+  /* Screen Flicker */
+  body::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 255, 65, 0.02);
+    opacity: 0;
+    z-index: 50;
+    pointer-events: none;
+    animation: flicker 0.15s infinite;
+  }
+}
+
+@keyframes flicker {
+  0% { opacity: 0.02; }
+  50% { opacity: 0.05; }
+  100% { opacity: 0.02; }
 }
 
 .glitch-hover:hover {
   animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
 }
 
-.neon-border {
-  border: 1px solid theme("colors.cyber.cyan");
-  box-shadow: 0 0 5px theme("colors.cyber.cyan"), inset 0 0 5px theme("colors.cyber.cyan");
+.terminal-border {
+  border: 1px solid theme("colors.matrix.green");
+  box-shadow: 0 0 5px theme("colors.matrix.green"), inset 0 0 5px rgba(0, 255, 65, 0.2);
 }
 
-.neon-border-magenta {
-  border: 1px solid theme("colors.cyber.magenta");
-  box-shadow: 0 0 5px theme("colors.cyber.magenta"), inset 0 0 5px theme("colors.cyber.magenta");
+.terminal-border-red {
+  border: 1px solid #ff0000;
+  box-shadow: 0 0 5px #ff0000, inset 0 0 5px rgba(255, 0, 0, 0.2);
+  color: #ff0000;
+  text-shadow: 0 0 2px rgba(255, 0, 0, 0.5);
+}
+
+.perspective-1000 {
+  perspective: 1000px;
 }

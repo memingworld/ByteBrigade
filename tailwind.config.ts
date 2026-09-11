@@ -52,11 +52,10 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        cyber: {
-          cyan: "#00f3ff",
-          magenta: "#ff003c",
-          black: "#0a0a0a",
-          silver: "#f4f4f5",
+        matrix: {
+          green: "#00ff41",
+          dark: "#0d0208",
+          black: "#000000"
         }
       },
       fontFamily: {

@@ -9,10 +9,17 @@ async function verifyAdmin() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return false;
   
-  // Checking role_permissions for this user is complex without joining via a user_roles table which is missing in schema.
-  // We will assume basic verification logic: check if user is in profiles. 
-  // In a real scenario, you query `role_permissions` against the user role.
-  return true; 
+  const { data: userRole } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", user.id)
+    .single()
+    
+  if (userRole && (userRole.role === "core" || userRole.role === "lead")) {
+    return true
+  }
+  
+  return false;
 }
 
 export async function verifySubmission(formData: FormData) {

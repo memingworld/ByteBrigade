@@ -14,34 +14,44 @@ export default async function DashboardPage() {
 	const teamScore = (teamSubmissions as any[])?.reduce((acc, curr) => acc + (curr.net_points || 0), 0) || 0
 
 	// 2. Get MVP Scoreboard
-	// We need to join profiles and submissions, then aggregate.
-	// Since Supabase RPC is better for grouping, we will simulate it with a standard query and JS map for this implementation
-	const { data: allMemberSubmissions, error: mvpError } = await supabase
+	// Fetch all team profiles first to ensure users with 0 points are visible
+	const { data: _teamProfiles } = await supabase
+		.from('profiles')
+		.select('*')
+		.eq('team_id', TEAM_ID)
+		
+	const teamProfiles = (_teamProfiles as any[]) || []
+
+	const { data: _allMemberSubmissions } = await supabase
 		.from('submissions')
-		.select('net_points, member_id, profiles(full_name, sprint_track)')
+		.select('net_points, member_id')
 		.eq('team_id', TEAM_ID)
 		.eq('status', 'verified')
+		
+	const allMemberSubmissions = (_allMemberSubmissions as any[]) || []
 
 	let mvps: { member_id: string; full_name: string; sprint_track: string; total_points: number }[] = []
 
-	if (allMemberSubmissions) {
-		const scoresMap = new Map<string, any>();
+	const scoresMap = new Map<string, any>()
 
-		(allMemberSubmissions as any[]).forEach((sub) => {
-			const p = sub.profiles as any
-			if (!scoresMap.has(sub.member_id)) {
-				scoresMap.set(sub.member_id, {
-					member_id: sub.member_id,
-					full_name: p?.full_name || 'Unknown Operative',
-					sprint_track: p?.sprint_track || 'Unassigned',
-					total_points: 0,
-				})
-			}
-			scoresMap.get(sub.member_id).total_points += sub.net_points || 0
+	// Initialize everyone with 0 points
+	teamProfiles.forEach((p) => {
+		scoresMap.set(p.id, {
+			member_id: p.id,
+			full_name: p.full_name || 'UNKNOWN_OPERATIVE',
+			sprint_track: p.sprint_track || 'UNASSIGNED',
+			total_points: 0,
 		})
+	})
 
-		mvps = Array.from(scoresMap.values()).sort((a, b) => b.total_points - a.total_points)
-	}
+	// Add points for verified submissions
+	allMemberSubmissions.forEach((sub) => {
+		if (scoresMap.has(sub.member_id)) {
+			scoresMap.get(sub.member_id).total_points += sub.net_points || 0
+		}
+	})
+
+	mvps = Array.from(scoresMap.values()).sort((a, b) => b.total_points - a.total_points)
 
 	return (
 		<div className="flex-1 flex flex-col min-h-[calc(100vh-3.5rem)] pb-20">
