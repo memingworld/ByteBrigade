@@ -57,8 +57,8 @@ export async function submitActivity(formData: FormData) {
 
   // Handle file upload if present
   if (file && file.size > 0) {
-    if (file.size > 5 * 1024 * 1024) {
-      return { error: "FILE_TOO_LARGE: Evidence exceeds 5MB limit" }
+    if (file.size > 10 * 1024 * 1024) {
+      return { error: "FILE_TOO_LARGE: Evidence exceeds 10MB limit" }
     }
     
     const fileExt = file.name.split(".").pop()

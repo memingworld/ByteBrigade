@@ -67,13 +67,13 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
           <Input 
             type="file" 
             name="proofFile" 
-            accept="image/*,application/pdf,.txt,.zip"
+            accept="image/jpeg,image/png,image/webp,application/pdf"
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
             onChange={(e) => {
               const file = e.target.files?.[0]
               if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                  setMessage("FILE_TOO_LARGE: Max evidence size is 5MB")
+                if (file.size > 10 * 1024 * 1024) {
+                  setMessage("FILE_TOO_LARGE: Max evidence size is 10MB")
                   e.target.value = ""
                   setFileName("")
                 } else {
