@@ -16,12 +16,14 @@ async function verifyAdmin() {
     
   const userRole = _userRoles?.[0] as any
 
-  const { data: profile } = await supabase
+  const { data: _profile } = await supabase
     .from("profiles")
     .select("team_id")
     .eq("id", user.id)
     .single()
     
+  const profile = _profile as any
+
   if (userRole && (userRole.role === "core" || userRole.role === "lead") && profile?.team_id) {
     return { authorized: true, teamId: profile.team_id }
   }
