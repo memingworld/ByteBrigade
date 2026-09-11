@@ -16,32 +16,40 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
   
   const selectedActivity = catalog.find(c => c.id === selectedActivityId)
 
-  async function clientSubmit(formData: FormData) {
+  async function clientSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    
     if (loading) return;
     if (selectedFiles.length === 0) {
       setMessage("INVALID_INPUT: At least 1 evidence file is strictly required.")
       return
     }
 
+    // This immediately forces React to paint the UI with the loading state
     setLoading(true)
     setMessage("")
+
+    const formData = new FormData(e.currentTarget)
 
     selectedFiles.forEach(file => {
       formData.append("proofFiles", file)
     })
 
     const res = await submitActivity(formData)
+    
     if (res?.error) {
       setMessage(res.error)
     } else {
       setMessage("UPLINK_SUCCESS: Activity logged.")
       setSelectedFiles([])
+      e.currentTarget.reset()
+      setSelectedActivityId("")
     }
     setLoading(false)
   }
 
   return (
-    <form action={clientSubmit} className="space-y-6 font-mono">
+    <form onSubmit={clientSubmit} className="space-y-6 font-mono">
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="activityId" className="text-matrix-green">&gt; select_payload_type</Label>
