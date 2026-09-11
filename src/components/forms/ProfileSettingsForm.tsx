@@ -82,6 +82,18 @@ export default function ProfileSettingsForm({ profile, userEmail }: { profile: a
       </div>
 
       <div>
+        <label className="block mb-2 text-sm" htmlFor="enrollmentNo">
+          &gt; config_enrollment_no
+        </label>
+        <input
+          className="w-full bg-matrix-dark border border-matrix-green/50 focus:border-matrix-green outline-none p-2"
+          name="enrollmentNo"
+          defaultValue={profile.enrollment_no || ""}
+          required
+        />
+      </div>
+
+      <div>
         <label className="block mb-2 text-sm" htmlFor="department">
           &gt; config_department
         </label>

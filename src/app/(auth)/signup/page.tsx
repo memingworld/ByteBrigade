@@ -41,6 +41,18 @@ export default function SignupPage({
               required
             />
           </div>
+
+          <div className="font-mono text-matrix-green">
+            <label className="block mb-1 text-sm" htmlFor="enrollmentNo">
+              &gt; input_enrollment_no
+            </label>
+            <input
+              className="w-full bg-transparent border-b border-matrix-green/50 focus:border-matrix-green outline-none text-matrix-green"
+              name="enrollmentNo"
+              placeholder="0123456789"
+              required
+            />
+          </div>
           
           <div className="font-mono text-matrix-green">
             <label className="block mb-1 text-sm" htmlFor="password">

@@ -15,6 +15,7 @@ export async function updateProfile(formData: FormData) {
   const fullName = formData.get("fullName") as string
   const department = formData.get("department") as string
   const sprintTrack = formData.get("sprintTrack") as string
+  const enrollmentNo = formData.get("enrollmentNo") as string
   const file = formData.get("avatarFile") as File
   
   let avatarPath = null;
@@ -44,6 +45,7 @@ export async function updateProfile(formData: FormData) {
     team_id: "f876de5d-4ada-4e24-bc97-bba3408d82f2",
     full_name: fullName,
     department,
+    enrollment_no: enrollmentNo,
     sprint_track: sprintTrack || null
   }
   
