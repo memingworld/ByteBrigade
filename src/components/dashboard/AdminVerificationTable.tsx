@@ -58,27 +58,34 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                       <div className="grid gap-6 md:grid-cols-2">
                         <div className="space-y-4">
                           <div>
-                            <h4 className="text-xs font-mono text-cyber-cyan uppercase mb-1">Details</h4>
-                            <p className="text-sm bg-card/50 p-3 rounded-none border border-border/50">{sub.details || "No extended details provided."}</p>
+                            <h4 className="text-xs font-mono text-matrix-green uppercase mb-1">Details</h4>
+                            <p className="text-sm bg-matrix-dark p-3 rounded-none border border-matrix-green/30 text-matrix-green/80">{sub.details || "No extended details provided."}</p>
                           </div>
                           {sub.external_url && (
                             <div>
-                              <h4 className="text-xs font-mono text-cyber-cyan uppercase mb-1">External Link</h4>
-                              <a href={sub.external_url} target="_blank" rel="noreferrer" className="text-sm text-cyber-magenta hover:underline break-all">
+                              <h4 className="text-xs font-mono text-matrix-green uppercase mb-1">External Link</h4>
+                              <a href={sub.external_url} target="_blank" rel="noreferrer" className="text-sm text-matrix-green hover:underline break-all">
                                 {sub.external_url}
                               </a>
                             </div>
                           )}
                           <div>
-                            <h4 className="text-xs font-mono text-cyber-cyan uppercase mb-1">Proof Files</h4>
+                            <h4 className="text-xs font-mono text-matrix-green uppercase mb-1">Proof Files</h4>
                             {sub.submission_proofs && sub.submission_proofs.length > 0 ? (
-                              <ul className="text-sm list-disc list-inside">
-                                {sub.submission_proofs.map((proof: any) => (
-                                  <li key={proof.id}>{proof.file_name}</li>
-                                ))}
+                              <ul className="text-sm list-none space-y-2">
+                                {sub.submission_proofs.map((proof: any) => {
+                                  const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/proofs/${proof.storage_path}`
+                                  return (
+                                    <li key={proof.id}>
+                                      <a href={url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-matrix-green hover:text-white hover:underline bg-matrix-dark border border-matrix-green/30 p-2">
+                                        <span className="font-mono text-xs uppercase">[VIEW_FILE]</span> {proof.file_name}
+                                      </a>
+                                    </li>
+                                  )
+                                })}
                               </ul>
                             ) : (
-                              <p className="text-sm text-muted-foreground">No files attached.</p>
+                              <p className="text-sm text-matrix-green/50 font-mono">NO EVIDENCE ATTACHED.</p>
                             )}
                           </div>
                         </div>

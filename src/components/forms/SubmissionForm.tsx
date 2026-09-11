@@ -11,6 +11,8 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
 
+  const [fileName, setFileName] = useState("")
+
   async function clientSubmit(formData: FormData) {
     setLoading(true)
     setMessage("")
@@ -19,6 +21,7 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
       setMessage(res.error)
     } else {
       setMessage("UPLINK_SUCCESS: Activity logged.")
+      setFileName("")
     }
     setLoading(false)
   }
@@ -60,11 +63,26 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
 
       <div className="space-y-2">
         <Label htmlFor="proofFile" className="text-matrix-green">&gt; attach_evidence_file</Label>
-        <div className="border border-dashed border-matrix-green/50 bg-matrix-green/5 hover:bg-matrix-green/10 transition-colors p-8 text-center relative cursor-pointer group">
-          <Input type="file" name="proofFile" className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+        <div className={`border border-dashed transition-colors p-8 text-center relative cursor-pointer group ${fileName ? 'border-matrix-green bg-matrix-green/20' : 'border-matrix-green/50 bg-matrix-green/5 hover:bg-matrix-green/10'}`}>
+          <Input 
+            type="file" 
+            name="proofFile" 
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+            onChange={(e) => setFileName(e.target.files?.[0]?.name || "")}
+          />
           <UploadCloud className="w-8 h-8 text-matrix-green mx-auto mb-2 group-hover:scale-110 transition-transform" />
-          <p className="font-bold text-sm text-matrix-green tracking-widest">DRAG_AND_DROP_EVIDENCE</p>
-          <p className="text-xs text-matrix-green/50 mt-1">or click to browse local filesystem</p>
+          
+          {fileName ? (
+            <div>
+              <p className="font-bold text-sm text-matrix-green tracking-widest">EVIDENCE_ACQUIRED</p>
+              <p className="text-xs text-matrix-green mt-1">{fileName}</p>
+            </div>
+          ) : (
+            <div>
+              <p className="font-bold text-sm text-matrix-green tracking-widest">DRAG_AND_DROP_EVIDENCE</p>
+              <p className="text-xs text-matrix-green/50 mt-1">or click to browse local filesystem</p>
+            </div>
+          )}
         </div>
       </div>
 
