@@ -10,8 +10,11 @@ import { UploadCloud } from "lucide-react"
 export default function SubmissionForm({ catalog }: { catalog: any[] }) {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState("")
+  const [selectedActivityId, setSelectedActivityId] = useState("")
 
   const [fileName, setFileName] = useState("")
+  
+  const selectedActivity = catalog.find(c => c.id === selectedActivityId)
 
   async function clientSubmit(formData: FormData) {
     setLoading(true)
@@ -31,11 +34,16 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="activityId" className="text-matrix-green">&gt; select_payload_type</Label>
-          <select name="activityId" required className="flex h-10 w-full rounded-none border border-matrix-green/50 bg-matrix-dark px-3 py-2 text-sm text-matrix-green focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-matrix-green appearance-none">
+          <select 
+            name="activityId" 
+            required 
+            onChange={(e) => setSelectedActivityId(e.target.value)}
+            className="flex h-10 w-full rounded-none border border-matrix-green/50 bg-matrix-dark px-3 py-2 text-sm text-matrix-green focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-matrix-green appearance-none"
+          >
             <option value="">-- AWAITING INPUT --</option>
             {Object.entries(
               catalog.reduce((acc, c) => {
-                const cat = c.category || "General";
+                const cat = c.category ? c.category.replace('_', ' ') : "General";
                 if (!acc[cat]) acc[cat] = [];
                 acc[cat].push(c);
                 return acc;
@@ -44,12 +52,17 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
               <optgroup key={category} label={`[ ${category.toUpperCase()} ]`} className="bg-matrix-dark text-matrix-green/70">
                 {items.map((c) => (
                   <option key={c.id} value={c.id} className="text-matrix-green">
-                    {c.label} ({c.points} PTS)
+                    {c.label}{c.level ? ` — ${c.level}` : ''} ({c.points} PTS)
                   </option>
                 ))}
               </optgroup>
             ))}
           </select>
+          {selectedActivity?.proof_hint && (
+            <p className="text-xs text-matrix-green/60 mt-1 animate-pulse border-l-2 border-matrix-green/30 pl-2">
+              <span className="font-bold text-matrix-green/80">HINT:</span> {selectedActivity.proof_hint}
+            </p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="occurredOn" className="text-matrix-green">&gt; input_execution_date</Label>
