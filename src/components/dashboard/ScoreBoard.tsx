@@ -1,39 +1,39 @@
-"use client"
+"use client";
 
-import { motion } from "framer-motion"
-import { useState, useRef } from "react"
+import { motion } from "framer-motion";
+import { useState, useRef } from "react";
 
 type MVP = {
   member_id: string;
   full_name: string;
   sprint_track: string;
   total_points: number;
-}
+};
 
 export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], recentActivity: any[] }) {
-  const [rotateX, setRotateX] = useState(0)
-  const [rotateY, setRotateY] = useState(0)
-  const ref = useRef<HTMLDivElement>(null)
+  const [rotateX, setRotateX] = useState(0);
+  const [rotateY, setRotateY] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!ref.current) return
-    const rect = ref.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
     
-    const rotateXValue = ((y - centerY) / centerY) * -10
-    const rotateYValue = ((x - centerX) / centerX) * 10
+    const rotateXValue = ((y - centerY) / centerY) * -10;
+    const rotateYValue = ((x - centerX) / centerX) * 10;
 
-    setRotateX(rotateXValue)
-    setRotateY(rotateYValue)
-  }
+    setRotateX(rotateXValue);
+    setRotateY(rotateYValue);
+  };
 
   const handleMouseLeave = () => {
-    setRotateX(0)
-    setRotateY(0)
-  }
+    setRotateX(0);
+    setRotateY(0);
+  };
 
   return (
     <div className="grid gap-6 md:grid-cols-2 mt-8 container font-mono perspective-1000 items-start">
@@ -59,7 +59,7 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
               mvps.map((mvp, index) => (
                 <div key={mvp.member_id} className="flex items-center justify-between p-2 border border-matrix-green/20 bg-matrix-dark hover:bg-matrix-green/10 transition-colors cursor-default">
                   <div className="flex items-center gap-4">
-                    <span className="text-matrix-green font-bold w-6">{(index + 1).toString().padStart(2, '0')}</span>
+                    <span className="text-matrix-green font-bold w-6">{(index + 1).toString().padStart(2, "0")}</span>
                     <div>
                       <p className="text-matrix-green uppercase">{mvp.full_name}</p>
                       <p className="text-xs text-matrix-green/60">{mvp.sprint_track}</p>
@@ -79,18 +79,16 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
         transition={{ delay: 0.6 }}
         className="flex flex-col gap-6"
       >
-        {/* Decorative Boot Sequence */}
         <div className="terminal-border bg-matrix-dark/90 backdrop-blur-md p-4 flex flex-col gap-1">
           <div className="text-xs text-matrix-green/70 space-y-1 overflow-hidden">
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>{">"} INITIALIZING ROOT ACCESS...</motion.p>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>{">"} CONNECTING TO BYTE_BRIGADE_NETWORK...</motion.p>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }} className="text-matrix-green font-bold">{">"} HANDSHAKE SUCCESSFUL.</p>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}>{">"} FETCHING LATEST SUBMISSIONS...</motion.p>
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.2 }} className="animate-pulse">{">"} SYSTEM OPTIMAL. AWAITING INPUT_</motion.p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>&gt; INITIALIZING ROOT ACCESS...</motion.p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>&gt; CONNECTING TO BYTE_BRIGADE_NETWORK...</motion.p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }} className="text-matrix-green font-bold">&gt; HANDSHAKE SUCCESSFUL.</motion.p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}>&gt; FETCHING LATEST SUBMISSIONS...</motion.p>
+            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.2 }} className="animate-pulse">&gt; SYSTEM OPTIMAL. AWAITING INPUT_</motion.p>
           </div>
         </div>
 
-        {/* Live Network Traffic */}
         <div className="terminal-border bg-matrix-dark/90 backdrop-blur-md p-6">
           <h3 className="text-xl font-bold text-matrix-green mb-6 border-b border-matrix-green/30 pb-2 uppercase flex items-center justify-between">
             <span>[ LIVE_NETWORK_TRAFFIC ]</span>
@@ -124,5 +122,5 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
         </div>
       </motion.div>
     </div>
-  )
+  );
 }
