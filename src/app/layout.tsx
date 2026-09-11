@@ -24,7 +24,8 @@ export default async function RootLayout({
   // Strict Multi-Tenant Isolation
   // Only allow Byte Brigade operatives to access this portal
   if (user) {
-    const { data: profile } = await supabase.from('profiles').select('team_id').eq('id', user.id).single();
+    const { data: _profile } = await supabase.from('profiles').select('team_id').eq('id', user.id).single();
+    const profile = _profile as any;
     if (profile && profile.team_id !== 'f876de5d-4ada-4e24-bc97-bba3408d82f2') {
       return (
         <html lang="en" className="dark">
