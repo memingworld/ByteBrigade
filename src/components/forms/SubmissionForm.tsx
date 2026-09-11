@@ -33,8 +33,21 @@ export default function SubmissionForm({ catalog }: { catalog: any[] }) {
           <Label htmlFor="activityId" className="text-matrix-green">&gt; select_payload_type</Label>
           <select name="activityId" required className="flex h-10 w-full rounded-none border border-matrix-green/50 bg-matrix-dark px-3 py-2 text-sm text-matrix-green focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-matrix-green appearance-none">
             <option value="">-- AWAITING INPUT --</option>
-            {catalog.map(c => (
-              <option key={c.id} value={c.id}>{c.label} ({c.points} PTS)</option>
+            {Object.entries(
+              catalog.reduce((acc, c) => {
+                const cat = c.category || "General";
+                if (!acc[cat]) acc[cat] = [];
+                acc[cat].push(c);
+                return acc;
+              }, {} as Record<string, any[]>)
+            ).map(([category, items]) => (
+              <optgroup key={category} label={`[ ${category.toUpperCase()} ]`} className="bg-matrix-dark text-matrix-green/70">
+                {items.map((c) => (
+                  <option key={c.id} value={c.id} className="text-matrix-green">
+                    {c.label} ({c.points} PTS)
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </div>
