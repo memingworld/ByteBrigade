@@ -47,7 +47,6 @@ async function DashboardContent() {
 
 	const EXCEPTION_IDS = [
 		'357a1587-7f5c-42b1-be63-9907f993697f', // Me
-		'ac5118b2-ea11-4b73-b96d-cf22f7e7c3bb'  // Naman
 	]
 
 	// Ghost Participant filtering
