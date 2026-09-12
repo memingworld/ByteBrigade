@@ -14,10 +14,15 @@ export async function submitActivity(formData: FormData) {
 
   // Get user profile to get team_id
   const { data: _profile } = await supabase.from("profiles").select("team_id").eq("id", user.id).single()
-  const profile = _profile as any;
+  const { data: _roleData } = await supabase.from("user_roles").select("role").eq("user_id", user.id).single()
   
-  if (!profile) {
-    return { error: "Profile not found" }
+  const profile = _profile as any;
+  const role = (_roleData as any)?.role;
+  
+  const TEAM_ID = profile?.team_id || (role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
+  
+  if (!TEAM_ID) {
+    return { error: "CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM." }
   }
 
   const activityId = formData.get("activityId") as string
@@ -71,7 +76,7 @@ export async function submitActivity(formData: FormData) {
   // @ts-ignore
   const { data: _submission, error: subError } = await supabase.from("submissions").insert({
     member_id: user.id,
-    team_id: profile.team_id,
+    team_id: TEAM_ID,
     activity_id: activityId,
     occurred_on: occurredOn,
     title,
@@ -105,7 +110,7 @@ export async function submitActivity(formData: FormData) {
     // @ts-ignore
     const { error: proofInsertError } = await supabase.from("submission_proofs").insert({
       submission_id: submission.id,
-      team_id: profile.team_id,
+      team_id: TEAM_ID,
       storage_path: filePath,
       file_name: file.name,
       mime_type: file.type,

@@ -53,7 +53,7 @@ async function AdminContent() {
     .single()
 
   const profile = _profile as any;
-  const adminTeamId = profile?.team_id;
+  const adminTeamId = profile?.team_id || (userRole.role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
 
   if (!adminTeamId) {
     return <div className="text-red-500 font-mono text-center p-8">CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM.</div>

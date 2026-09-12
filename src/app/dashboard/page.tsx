@@ -21,18 +21,41 @@ async function DashboardContent() {
 		.eq("id", user.id)
 		.single()
 
+	const { data: _roleData } = await supabase
+		.from("user_roles")
+		.select("role")
+		.eq("user_id", user.id)
+		.single()
+
 	const profile = _profile as any;
-	const TEAM_ID = profile?.team_id
+	const role = (_roleData as any)?.role;
+	
+	// If they are core, they might not have a team_id. Default to this dashboard's team.
+	const TEAM_ID = profile?.team_id || (role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
 
 	if (!TEAM_ID) {
 		return <div className="text-red-500 font-mono text-center p-8">CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM.</div>
 	}
 
-	const { data: teamSubmissions } = await supabase.from('submissions').select('net_points').eq('team_id', TEAM_ID).eq('status', 'verified')
-	const teamScore = (teamSubmissions as any[])?.reduce((acc, curr) => acc + (curr.net_points || 0), 0) || 0
-
 	const { data: _teamProfiles } = await supabase.from('profiles').select('*').eq('team_id', TEAM_ID)
 	const teamProfiles = (_teamProfiles as any[]) || []
+
+	const { data: _roles } = await supabase.from('user_roles').select('user_id, role')
+	const allRoles = (_roles as any[]) || []
+	const roleMap = new Map<string, string>()
+	allRoles.forEach(r => roleMap.set(r.user_id, r.role))
+
+	const EXCEPTION_IDS = [
+		'357a1587-7f5c-42b1-be63-9907f993697f', // Me
+		'ac5118b2-ea11-4b73-b96d-cf22f7e7c3bb'  // Naman
+	]
+
+	// Ghost Participant filtering
+	const validProfiles = teamProfiles.filter(p => {
+		if (EXCEPTION_IDS.includes(p.id)) return true;
+		const r = roleMap.get(p.id)
+		return r !== 'lead' && r !== 'core'
+	})
 
 	const { data: _allMemberSubmissions } = await supabase.from('submissions').select('net_points, member_id').eq('team_id', TEAM_ID).eq('status', 'verified')
 	const allMemberSubmissions = (_allMemberSubmissions as any[]) || []
@@ -40,7 +63,7 @@ async function DashboardContent() {
 	let mvps: { member_id: string; full_name: string; sprint_track: string; avatar_path: string | null; total_points: number }[] = []
 	const scoresMap = new Map<string, any>()
 
-	teamProfiles.forEach((p) => {
+	validProfiles.forEach((p) => {
 		scoresMap.set(p.id, {
 			member_id: p.id,
 			full_name: p.full_name || 'UNKNOWN_OPERATIVE',
@@ -57,6 +80,9 @@ async function DashboardContent() {
 	})
 
 	mvps = Array.from(scoresMap.values()).sort((a, b) => b.total_points - a.total_points)
+	
+	// Calculate total team score only from valid MVPs
+	const teamScore = mvps.reduce((acc, curr) => acc + curr.total_points, 0)
 
 	const { data: recentSubmissions } = await supabase
 		.from('submissions')
@@ -64,12 +90,18 @@ async function DashboardContent() {
 		.eq('team_id', TEAM_ID)
 		.eq('status', 'verified')
 		.order('submitted_at', { ascending: false })
-		.limit(15)
+		.limit(20)
+
+	const validRecentSubmissions = (recentSubmissions as any[] || []).filter(sub => {
+		if (EXCEPTION_IDS.includes(sub.member_id)) return true;
+		const r = roleMap.get(sub.member_id)
+		return r !== 'lead' && r !== 'core'
+	})
 
 	return (
 		<div className="flex-1 flex flex-col min-h-[calc(100vh-3.5rem)] pb-20">
 			<HeroSection teamScore={teamScore} />
-			<ScoreBoard mvps={mvps} recentActivity={(recentSubmissions as any[]) || []} />
+			<ScoreBoard mvps={mvps} recentActivity={validRecentSubmissions} />
 		</div>
 	)
 }

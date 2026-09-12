@@ -24,8 +24,10 @@ async function verifyAdmin() {
     
   const profile = _profile as any
 
-  if (userRole && (userRole.role === "core" || userRole.role === "lead") && profile?.team_id) {
-    return { authorized: true, teamId: profile.team_id }
+  const TEAM_ID = profile?.team_id || (userRole?.role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
+
+  if (userRole && (userRole.role === "core" || userRole.role === "lead") && TEAM_ID) {
+    return { authorized: true, teamId: TEAM_ID }
   }
   
   return { authorized: false, teamId: null };
