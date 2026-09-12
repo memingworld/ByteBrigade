@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { login } from "@/lib/actions/auth"
 import MatrixRain from "@/components/ui/MatrixRain"
 import { createClient } from "@/lib/supabase/server"
@@ -29,6 +30,9 @@ export default async function LoginPage({
       <div className="w-full flex-1 flex flex-col justify-center items-center px-4 py-20 min-h-[80vh]">
         <div className="w-full max-w-md bg-matrix-dark/80 backdrop-blur-md p-8 terminal-border relative z-10 shadow-[0_0_30px_rgba(0,255,0,0.1)]">
           <div className="mb-8 font-mono">
+            <div className="flex flex-col items-center mb-6">
+              <Image src="/logo.jpg" alt="Byte Brigade Logo" width={96} height={96} className="rounded-lg shadow-[0_0_20px_rgba(0,255,0,0.2)] border border-matrix-green/30" />
+            </div>
             <p className="text-matrix-green mb-2">System Initialization...</p>
             <p className="text-matrix-green mb-2">Connecting to Byte_Brigade_Mainframe...</p>
             <p className="text-matrix-green mb-6">Connection Established. Awaiting Authentication.</p>
