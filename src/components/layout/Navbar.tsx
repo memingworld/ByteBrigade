@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Terminal, Grid, UploadCloud, ShieldAlert, Settings, LogOut, Users } from "lucide-react";
 
@@ -8,7 +9,7 @@ export default function Navbar() {
       <div className="container flex h-14 items-center justify-between">
         <div className="hidden md:flex flex-1 items-center">
           <Link href="/" className="mr-8 flex items-center space-x-2">
-            <Terminal className="h-6 w-6 text-matrix-green" />
+            <Image src="/logo.jpg" alt="Byte Brigade Logo" width={28} height={28} className="rounded-sm border border-matrix-green/50" />
             <span className="font-bold sm:inline-block font-mono tracking-wider text-matrix-green glitch-hover text-lg">
               root@byte-brigade:~#
             </span>
@@ -57,7 +58,7 @@ export default function Navbar() {
         {/* Mobile nav placeholder */}
         <div className="md:hidden flex flex-1 items-center justify-between gap-2">
           <div className="flex items-center gap-2">
-            <Terminal className="h-5 w-5 text-matrix-green" />
+            <Image src="/logo.jpg" alt="Byte Brigade Logo" width={24} height={24} className="rounded-sm border border-matrix-green/50" />
             <span className="font-bold font-mono tracking-wider text-matrix-green">root@bb:~#</span>
           </div>
           <form action={async () => {
