@@ -37,7 +37,8 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
   };
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 mt-8 container font-mono perspective-1000 items-start">
+    <div className="grid gap-6 max-w-4xl mx-auto mt-8 container font-mono perspective-1000 items-start">
+      {/* MVP LEADERBOARD STASHED: Uncomment below to restore MVP list 
       <motion.div
         ref={ref}
         onMouseMove={handleMouseMove}
@@ -86,6 +87,7 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
           </div>
         </div>
       </motion.div>
+      */}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -119,9 +121,11 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
                     <span className="text-sm font-bold text-matrix-green uppercase">
                       {activity.profiles?.full_name}
                     </span>
+                    {/* INDIVIDUAL POINTS STASHED: Uncomment below to restore
                     <span className="text-xs text-matrix-green font-bold">
                       +{activity.net_points} PTS
                     </span>
+                    */}
                   </div>
                   <span className="text-xs text-matrix-green/70 mt-1 uppercase">
                     EXECUTED: {activity.activity_catalog?.label}

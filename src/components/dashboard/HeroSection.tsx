@@ -30,6 +30,7 @@ export default function HeroSection({ teamScore }: { teamScore: number }) {
           </motion.h1>
         </div>
         
+        {/* TOTAL POINTS STASHED: Uncomment below to restore points
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -43,6 +44,7 @@ export default function HeroSection({ teamScore }: { teamScore: number }) {
             {teamScore.toLocaleString()} PTS
           </span>
         </motion.div>
+        */}
       </motion.div>
     </div>
   )
