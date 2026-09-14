@@ -5,6 +5,7 @@ import { AlertTriangle } from "lucide-react"
 
 import { Suspense } from 'react'
 import Loading from '../loading'
+import { toggleRegistration } from "@/lib/actions/admin"
 
 export const dynamic = "force-dynamic";
 
@@ -68,11 +69,11 @@ async function AdminContent() {
     .eq("team_id", adminTeamId)
     .order("submitted_at", { ascending: false })
 
-  // Fetch Team settings (we use color column for registration toggle)
+  // Fetch ByteBrigade Team settings (we use color column for registration toggle)
   const { data: adminTeam } = await supabase
     .from("teams")
     .select("color")
-    .eq("id", adminTeamId)
+    .eq("id", "f876de5d-4ada-4e24-bc97-bba3408d82f2") // Byte Brigade ID
     .single()
     
   const registrationState = (adminTeam as any)?.color === "CLOSED" ? "CLOSED" : "OPEN"
@@ -92,11 +93,7 @@ async function AdminContent() {
           <h2 className="text-red-500 font-bold tracking-widest mb-1">[ SYSTEM_SETTINGS ]</h2>
           <p className="text-xs text-red-500/60">Manage sector configurations and operational status.</p>
         </div>
-        <form action={async (fd) => {
-          "use server"
-          const { toggleRegistration } = await import("@/lib/actions/admin")
-          await toggleRegistration(fd)
-        }}>
+        <form action={toggleRegistration}>
           <input type="hidden" name="currentState" value={registrationState} />
           <div className="flex items-center gap-4">
             <span className="text-sm text-red-500 font-bold">REGISTRATION:</span>

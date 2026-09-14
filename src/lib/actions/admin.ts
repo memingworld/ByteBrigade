@@ -166,7 +166,7 @@ export async function toggleRegistration(formData: FormData) {
     .from("teams")
     // @ts-ignore
     .update({ color: newState } as any)
-    .eq("id", adminCheck.teamId)
+    .eq("id", "f876de5d-4ada-4e24-bc97-bba3408d82f2")
 
   if (error) return { error: error.message }
   
