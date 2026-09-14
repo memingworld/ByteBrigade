@@ -11,7 +11,7 @@ import { AlertTriangle } from "lucide-react"
 
 export default function AdminVerificationTable({ submissions }: { submissions: any[] }) {
   const [expandedRow, setExpandedRow] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<"pending" | "history">("pending")
+  const [activeTab, setActiveTab] = useState("pending")
   
   const pendingSubmissions = submissions.filter(s => s.status === "pending")
   const historySubmissions = submissions.filter(s => s.status !== "pending")
