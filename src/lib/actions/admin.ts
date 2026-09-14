@@ -127,3 +127,30 @@ export async function applyPlagiarismPenalty(formData: FormData) {
   revalidatePath("/dashboard")
   return { success: true }
 }
+export async function revertSubmission(formData: FormData) {
+  const adminCheck = await verifyAdmin()
+  if (!adminCheck.authorized) return { error: "Unauthorized" }
+
+  const supabase = createClient()
+  const submissionId = formData.get("submissionId") as string
+
+  const { error } = await supabase
+    .from("submissions")
+    // @ts-ignore
+    .update({
+      status: "pending",
+      awarded_points: 0,
+      penalty_points: 0,
+      decided_by: null,
+      decided_at: null,
+      decision_note: null
+    } as any)
+    .eq("id", submissionId)
+    .eq("team_id", adminCheck.teamId)
+
+  if (error) return { error: error.message }
+  
+  revalidatePath("/admin")
+  revalidatePath("/dashboard")
+  return { success: true }
+}

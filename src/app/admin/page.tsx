@@ -59,25 +59,24 @@ async function AdminContent() {
     return <div className="text-red-500 font-mono text-center p-8">CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM.</div>
   }
 
-  // Fetch pending submissions scoped EXACTLY to the admin's team
-  const { data: pendingSubmissions } = await supabase
+  // Fetch ALL submissions scoped EXACTLY to the admin's team
+  const { data: allSubmissions } = await supabase
     .from("submissions")
     .select("*, profiles(full_name), activity_catalog(label, points), submission_proofs(*)")
     .eq("team_id", adminTeamId)
-    .eq("status", "pending")
-    .order("submitted_at", { ascending: true })
+    .order("submitted_at", { ascending: false })
 
   return (
     <div className="container py-8 flex flex-col gap-8 min-h-[calc(100vh-3.5rem)]">
       <div className="flex flex-col gap-2 font-mono border-b border-red-500/30 pb-4">
         <h1 className="text-3xl font-bold text-red-500 tracking-wider glitch-hover">/root/cmd_center</h1>
         <p className="text-red-500/60 uppercase tracking-widest text-xs">
-          AWAITING LEADER VERIFICATION
+          COMMAND & VERIFICATION CENTER
         </p>
       </div>
 
       <div className="bg-matrix-dark/80 backdrop-blur terminal-border-red">
-        <AdminVerificationTable submissions={(pendingSubmissions as any[]) || []} />
+        <AdminVerificationTable submissions={(allSubmissions as any[]) || []} />
       </div>
     </div>
   )
