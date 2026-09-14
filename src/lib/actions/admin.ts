@@ -154,3 +154,23 @@ export async function revertSubmission(formData: FormData) {
   revalidatePath("/dashboard")
   return { success: true }
 }
+export async function toggleRegistration(formData: FormData) {
+  const adminCheck = await verifyAdmin()
+  if (!adminCheck.authorized) return { error: "Unauthorized" }
+
+  const supabase = createClient()
+  const currentState = formData.get("currentState") as string
+  const newState = currentState === "CLOSED" ? "OPEN" : "CLOSED"
+
+  const { error } = await supabase
+    .from("teams")
+    // @ts-ignore
+    .update({ color: newState } as any)
+    .eq("id", adminCheck.teamId)
+
+  if (error) return { error: error.message }
+  
+  revalidatePath("/admin")
+  revalidatePath("/signup")
+  return { success: true }
+}

@@ -66,6 +66,15 @@ async function AdminContent() {
     .eq("team_id", adminTeamId)
     .order("submitted_at", { ascending: false })
 
+  // Fetch Team settings (we use color column for registration toggle)
+  const { data: adminTeam } = await supabase
+    .from("teams")
+    .select("color")
+    .eq("id", adminTeamId)
+    .single()
+    
+  const registrationState = adminTeam?.color === "CLOSED" ? "CLOSED" : "OPEN"
+
   return (
     <div className="container py-8 flex flex-col gap-8 min-h-[calc(100vh-3.5rem)]">
       <div className="flex flex-col gap-2 font-mono border-b border-red-500/30 pb-4">
@@ -73,6 +82,27 @@ async function AdminContent() {
         <p className="text-red-500/60 uppercase tracking-widest text-xs">
           COMMAND & VERIFICATION CENTER
         </p>
+      </div>
+
+      {/* SYSTEM SETTINGS */}
+      <div className="bg-matrix-dark/80 backdrop-blur border border-red-500/30 p-6 flex items-center justify-between font-mono">
+        <div>
+          <h2 className="text-red-500 font-bold tracking-widest mb-1">[ SYSTEM_SETTINGS ]</h2>
+          <p className="text-xs text-red-500/60">Manage sector configurations and operational status.</p>
+        </div>
+        <form action={async (fd) => {
+          "use server"
+          const { toggleRegistration } = await import("@/lib/actions/admin")
+          await toggleRegistration(fd)
+        }}>
+          <input type="hidden" name="currentState" value={registrationState} />
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-red-500 font-bold">REGISTRATION:</span>
+            <button type="submit" className={`px-4 py-2 border font-bold tracking-widest transition-colors ${registrationState === 'OPEN' ? 'border-matrix-green text-matrix-green hover:bg-matrix-green hover:text-black' : 'border-red-500 text-red-500 hover:bg-red-500 hover:text-black'}`}>
+              {registrationState}
+            </button>
+          </div>
+        </form>
       </div>
 
       <div className="bg-matrix-dark/80 backdrop-blur terminal-border-red">
