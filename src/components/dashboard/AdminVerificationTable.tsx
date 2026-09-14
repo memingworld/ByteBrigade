@@ -259,5 +259,6 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
         </tbody>
       </table>
     </div>
+    </div>
   )
 }
