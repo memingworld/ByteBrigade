@@ -26,7 +26,14 @@ async function verifyAdmin() {
 
   const TEAM_ID = profile?.team_id || (userRole?.role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
 
-  if (userRole && (userRole.role === "core" || userRole.role === "lead") && TEAM_ID) {
+  const EXCEPTION_IDS = [
+    '357a1587-7f5c-42b1-be63-9907f993697f', // Me
+    'ac5118b2-ea11-4b73-b96d-cf22f7e7c3bb', // Naman
+  ]
+
+  const isException = EXCEPTION_IDS.includes(user.id)
+
+  if ((isException || (userRole && (userRole.role === "core" || userRole.role === "lead"))) && TEAM_ID) {
     return { authorized: true, teamId: TEAM_ID }
   }
   

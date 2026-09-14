@@ -23,9 +23,14 @@ async function AdminContent() {
     .select("role")
     .eq("user_id", user.id)
 
-  const userRole = _userRoles?.[0] as any
+  const EXCEPTION_IDS = [
+    '357a1587-7f5c-42b1-be63-9907f993697f', // Me
+    'ac5118b2-ea11-4b73-b96d-cf22f7e7c3bb', // Naman
+  ]
+
+  const isException = EXCEPTION_IDS.includes(user.id)
     
-  if (!userRole || (userRole.role !== "core" && userRole.role !== "lead")) {
+  if (!isException && (!userRole || (userRole.role !== "core" && userRole.role !== "lead"))) {
     return (
       <div className="min-h-[calc(100vh-3.5rem)] flex items-center justify-center p-4">
         <div className="w-full max-w-2xl bg-black border border-red-500 shadow-[0_0_20px_#ff0000] p-8 relative overflow-hidden">
@@ -35,10 +40,15 @@ async function AdminContent() {
             <h1 className="text-4xl font-bold mb-4 glitch-hover">ACCESS DENIED</h1>
             <p className="text-xl mb-6 tracking-widest">UNAUTHORIZED ROOT ATTEMPT LOGGED.</p>
 
-            <p className="text-sm opacity-70 mb-8">
+            <p className="text-sm opacity-70 mb-4">
               Your IP address and hardware ID have been recorded and reported to the system administrator.
               Only CORE and LEAD operatives may access this terminal.
             </p>
+            {roleError && (
+              <div className="bg-red-900/30 p-2 mb-6 border border-red-500/50 text-xs text-left">
+                [SYSTEM_LOG] Auth Check Failed: {roleError.message || JSON.stringify(roleError)}
+              </div>
+            )}
             <a href="/dashboard" className="px-6 py-2 border border-red-500 hover:bg-red-500 hover:text-black transition-colors uppercase font-bold tracking-widest">
               Return to Safe Sector
             </a>
