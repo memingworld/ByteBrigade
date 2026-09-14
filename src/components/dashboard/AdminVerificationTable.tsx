@@ -10,13 +10,13 @@ import { format } from "date-fns"
 import { AlertTriangle } from "lucide-react"
 
 export default function AdminVerificationTable({ submissions }: { submissions: any[] }) {
-  const [expandedRow, setExpandedRow] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState("pending")
+  const [expandedRow, setExpandedRow] = useState(null);
+  const [activeTab, setActiveTab] = useState("pending");
   
-  const pendingSubmissions = submissions.filter(s => s.status === "pending")
-  const historySubmissions = submissions.filter(s => s.status !== "pending")
+  const pendingSubmissions = submissions.filter((s) => s.status === "pending");
+  const historySubmissions = submissions.filter((s) => s.status !== "pending");
   
-  const displaySubmissions = activeTab === "pending" ? pendingSubmissions : historySubmissions
+  const displaySubmissions = activeTab === "pending" ? pendingSubmissions : historySubmissions;
 
   return (
     <div className="flex flex-col">
@@ -124,7 +124,7 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                                 <h4 className="font-mono text-matrix-green mb-4">[ DECISION_MATRIX ]</h4>
                                 <form 
                                   action={async (fd) => { 
-                                    const btn = document.getElementById(`btn-verify-${sub.id}`) as HTMLButtonElement
+                                    const btn = document.getElementById(`btn-verify-${sub.id}`)
                                     if (btn) btn.innerHTML = "VERIFYING..."
                                     await verifySubmission(fd)
                                     setExpandedRow(null)
@@ -145,7 +145,7 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                                 <div className="flex gap-2">
                                   <form 
                                     action={async (fd) => { 
-                                      const btn = document.getElementById(`btn-reject-${sub.id}`) as HTMLButtonElement
+                                      const btn = document.getElementById(`btn-reject-${sub.id}`)
                                       if (btn) btn.innerHTML = "REJECTING..."
                                       await rejectSubmission(fd)
                                       setExpandedRow(null)
@@ -159,7 +159,7 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                                   </form>
                                   <form 
                                     action={async (fd) => { 
-                                      const btn = document.getElementById(`btn-penalize-${sub.id}`) as HTMLButtonElement
+                                      const btn = document.getElementById(`btn-penalize-${sub.id}`)
                                       if (btn) btn.innerHTML = "PENALIZING..."
                                       await applyPlagiarismPenalty(fd)
                                       setExpandedRow(null)
@@ -179,7 +179,7 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
                               <div className="pt-4 border-t border-matrix-green/20">
                                 <form 
                                   action={async (fd) => { 
-                                    const btn = document.getElementById(`btn-ask-${sub.id}`) as HTMLButtonElement
+                                    const btn = document.getElementById(`btn-ask-${sub.id}`)
                                     if (btn) btn.innerHTML = "TRANSMITTING..."
                                     // We route it through rejectSubmission but with a specific note
                                     fd.set("decisionNote", "ACTION REQUIRED: Insufficient proof. Please submit a new payload with clearer evidence.");
@@ -233,7 +233,7 @@ export default function AdminVerificationTable({ submissions }: { submissions: a
 
                               <form 
                                 action={async (fd) => { 
-                                  const btn = document.getElementById(`btn-revert-${sub.id}`) as HTMLButtonElement
+                                  const btn = document.getElementById(`btn-revert-${sub.id}`)
                                   if (btn) btn.innerHTML = "REVERTING..."
                                   await revertSubmission(fd)
                                   setExpandedRow(null)
