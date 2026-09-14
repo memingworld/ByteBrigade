@@ -23,6 +23,8 @@ async function AdminContent() {
     .select("role")
     .eq("user_id", user.id)
 
+  const userRole = _userRoles?.[0] as any;
+
   const EXCEPTION_IDS = [
     '357a1587-7f5c-42b1-be63-9907f993697f', // Me
   ]
