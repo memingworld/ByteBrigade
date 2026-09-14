@@ -154,14 +154,3 @@ export default async function SignupPage({
     </div>
   )
 }
-            <p className="text-sm text-matrix-green/70 font-mono">
-              <a href="/login" className="hover:text-matrix-green underline decoration-matrix-green/30 hover:decoration-matrix-green">
-                ABORT / RETURN TO LOGIN
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
