@@ -2,6 +2,8 @@ import { signup } from "@/lib/actions/auth"
 import MatrixRain from "@/components/ui/MatrixRain"
 import { createClient } from "@/lib/supabase/server"
 
+export const dynamic = "force-dynamic";
+
 export default async function SignupPage({
   searchParams,
 }: {

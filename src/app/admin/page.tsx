@@ -6,6 +6,8 @@ import { AlertTriangle } from "lucide-react"
 import { Suspense } from 'react'
 import Loading from '../loading'
 
+export const dynamic = "force-dynamic";
+
 async function AdminContent() {
   const supabase = createClient()
   const { data: { user } } = await supabase.auth.getUser()
