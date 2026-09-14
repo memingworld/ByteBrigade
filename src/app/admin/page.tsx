@@ -93,7 +93,10 @@ async function AdminContent() {
           <h2 className="text-red-500 font-bold tracking-widest mb-1">[ SYSTEM_SETTINGS ]</h2>
           <p className="text-xs text-red-500/60">Manage sector configurations and operational status.</p>
         </div>
-        <form action={toggleRegistration}>
+        <form action={async (fd) => {
+          "use server";
+          await toggleRegistration(fd);
+        }}>
           <input type="hidden" name="currentState" value={registrationState} />
           <div className="flex items-center gap-4">
             <span className="text-sm text-red-500 font-bold">REGISTRATION:</span>
