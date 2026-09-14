@@ -83,12 +83,17 @@ const config = {
           "60%": { transform: "translate(2px, 2px)" },
           "80%": { transform: "translate(2px, -2px)" },
           "100%": { transform: "translate(0)" },
+        },
+        "marquee": {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(-50%)" },
         }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "glitch": "glitch 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite",
+        "marquee": "marquee 20s linear infinite",
       },
     },
   },

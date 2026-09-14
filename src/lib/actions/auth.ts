@@ -22,64 +22,7 @@ export async function login(formData: FormData) {
 }
 
 export async function signup(formData: FormData) {
-  const supabase = createClient()
-  const email = formData.get("email") as string
-  const password = formData.get("password") as string
-  const fullName = formData.get("fullName") as string
-  const department = formData.get("department") as string
-  const sprintTrack = formData.get("sprintTrack") as string
-  const enrollmentNo = formData.get("enrollmentNo") as string
-
-  // Strict Validation
-  if (!email || !password || !fullName || !department || !sprintTrack || !enrollmentNo) {
-    return redirect("/signup?message=All fields are strictly required.")
-  }
-
-  if (!/^\d+$/.test(enrollmentNo)) {
-    return redirect("/signup?message=INVALID_INPUT: Enrollment number must contain only numerical digits.")
-  }
-
-  const validDepartments = ["Technical", "Event Management", "R&D", "Social", "Design", "PR"]
-  if (!validDepartments.includes(department)) {
-    return redirect("/signup?message=INVALID_INPUT: Unauthorized department selected.")
-  }
-
-  const validTracks = ["code", "open_source", "build", "pitch"]
-  if (!validTracks.includes(sprintTrack)) {
-    return redirect("/signup?message=INVALID_INPUT: Unauthorized sprint track selected.")
-  }
-
-  // 1. Create the user in Auth
-  const { data: authData, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-  })
-
-  if (authError) {
-    return redirect("/signup?message=" + authError.message)
-  }
-
-  const userId = authData.user?.id
-
-  if (userId) {
-    // 2. Create the user profile
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: userId,
-      full_name: fullName,
-      department: department,
-      enrollment_no: enrollmentNo,
-      team_id: "f876de5d-4ada-4e24-bc97-bba3408d82f2", // Default to Byte Brigade
-      sprint_track: sprintTrack,
-      is_active: true
-    } as any)
-    
-    if (profileError) {
-      console.error("Profile Error:", profileError)
-      return redirect("/signup?message=Profile creation failed: " + profileError.message)
-    }
-  }
-
-  return redirect("/dashboard")
+  return redirect("/signup?message=REGISTRATION CLOSED. TEAM CAPACITY (8/8) REACHED.")
 }
 
 export async function logout() {

@@ -111,30 +111,27 @@ export default function ScoreBoard({ mvps, recentActivity }: { mvps: MVP[], rece
             <span className="text-xs text-matrix-green/50 animate-pulse font-normal whitespace-nowrap">REC/LIVE</span>
           </h3>
           
-          <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="relative h-[400px] overflow-hidden pr-2 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
             {recentActivity.length === 0 ? (
               <div className="text-center py-8 text-matrix-green/50 text-sm">NO_RECENT_TRAFFIC_DETECTED</div>
             ) : (
-              recentActivity.map((activity) => (
-                <div key={activity.id} className="flex flex-col border-l-2 border-matrix-green/50 pl-3 py-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-bold text-matrix-green uppercase">
-                      {activity.profiles?.full_name}
+              <div className="animate-marquee hover:[animation-play-state:paused] flex flex-col space-y-4 pt-4">
+                {[...recentActivity, ...recentActivity, ...recentActivity].map((activity, index) => (
+                  <div key={`${activity.id}-${index}`} className="flex flex-col border-l-2 border-matrix-green/50 pl-3 py-1 shrink-0">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-bold text-matrix-green uppercase">
+                        {activity.profiles?.full_name}
+                      </span>
+                    </div>
+                    <span className="text-xs text-matrix-green/70 mt-1 uppercase">
+                      EXECUTED: {activity.activity_catalog?.label}
                     </span>
-                    {/* INDIVIDUAL POINTS STASHED: Uncomment below to restore
-                    <span className="text-xs text-matrix-green font-bold">
-                      +{activity.net_points} PTS
+                    <span className="text-[10px] text-matrix-green/40 mt-1">
+                      {new Date(activity.submitted_at).toLocaleDateString()} {new Date(activity.submitted_at).toLocaleTimeString()}
                     </span>
-                    */}
                   </div>
-                  <span className="text-xs text-matrix-green/70 mt-1 uppercase">
-                    EXECUTED: {activity.activity_catalog?.label}
-                  </span>
-                  <span className="text-[10px] text-matrix-green/40 mt-1">
-                    {new Date(activity.submitted_at).toLocaleDateString()} {new Date(activity.submitted_at).toLocaleTimeString()}
-                  </span>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
         </div>
