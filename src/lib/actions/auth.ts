@@ -26,7 +26,7 @@ export async function signup(formData: FormData) {
   
   // Registration Toggle Check
   const { data: team } = await supabase.from("teams").select("color").eq("id", "f876de5d-4ada-4e24-bc97-bba3408d82f2").single();
-  if (team?.color === "CLOSED") {
+  if ((team as any)?.color === "CLOSED") {
     return redirect("/signup?message=REGISTRATION CLOSED. TEAM CAPACITY (8/8) REACHED.")
   }
 

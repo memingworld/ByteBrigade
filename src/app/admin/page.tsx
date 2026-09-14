@@ -73,7 +73,7 @@ async function AdminContent() {
     .eq("id", adminTeamId)
     .single()
     
-  const registrationState = adminTeam?.color === "CLOSED" ? "CLOSED" : "OPEN"
+  const registrationState = (adminTeam as any)?.color === "CLOSED" ? "CLOSED" : "OPEN"
 
   return (
     <div className="container py-8 flex flex-col gap-8 min-h-[calc(100vh-3.5rem)]">
