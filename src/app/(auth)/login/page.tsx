@@ -12,6 +12,7 @@ export default async function LoginPage({
   const TEAM_ID = "f876de5d-4ada-4e24-bc97-bba3408d82f2"
 
   // Fetch safe public profile data for the Meet Our Team section via Secure RPC
+  // @ts-ignore - Bypass strict Supabase types since the RPC was manually created
   const { data: _teamMembers, error } = await supabase
     .rpc('get_meet_our_team', { p_team_id: TEAM_ID })
     
