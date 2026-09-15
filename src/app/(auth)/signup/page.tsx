@@ -10,8 +10,8 @@ export default async function SignupPage({
   searchParams: { message: string }
 }) {
   const supabase = createClient();
-  const { data: team } = await supabase.from("teams").select("color").eq("id", "f876de5d-4ada-4e24-bc97-bba3408d82f2").single();
-  const isClosed = (team as any)?.color === "CLOSED";
+  const { data: registrationStatus } = await supabase.rpc('get_registration_status');
+  const isClosed = registrationStatus === "CLOSED";
 
   return (
     <div className="min-h-[calc(100vh-3.5rem)] flex items-center justify-center relative px-4 py-8">

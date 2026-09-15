@@ -24,9 +24,10 @@ export async function login(formData: FormData) {
 export async function signup(formData: FormData) {
   const supabase = createClient()
   
-  // Registration Toggle Check
-  const { data: team } = await supabase.from("teams").select("color").eq("id", "f876de5d-4ada-4e24-bc97-bba3408d82f2").single();
-  if ((team as any)?.color === "CLOSED") {
+  // Registration Toggle Check via Secure RPC
+  const { data: registrationStatus } = await supabase.rpc('get_registration_status');
+  
+  if (registrationStatus === "CLOSED") {
     return redirect("/signup?message=REGISTRATION CLOSED. TEAM CAPACITY (8/8) REACHED.")
   }
 
