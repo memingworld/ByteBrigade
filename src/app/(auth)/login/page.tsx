@@ -11,12 +11,9 @@ export default async function LoginPage({
   const supabase = createClient()
   const TEAM_ID = "f876de5d-4ada-4e24-bc97-bba3408d82f2"
 
-  // Fetch all team members for the Meet Our Team section
+  // Fetch safe public profile data for the Meet Our Team section via Secure RPC
   const { data: _teamMembers } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("team_id", TEAM_ID)
-    .order("full_name", { ascending: true })
+    .rpc('get_meet_our_team', { p_team_id: TEAM_ID })
 
   const teamMembers = (_teamMembers as any[]) || []
 
