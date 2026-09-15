@@ -21,7 +21,7 @@ async function DashboardContent() {
 		.eq("id", user.id)
 		.single()
 
-	const { data: _roleData, error: roleError } = await supabase
+	const { data: _roleData } = await supabase
 		.from("user_roles")
 		.select("role")
 		.eq("user_id", user.id)
@@ -34,7 +34,7 @@ async function DashboardContent() {
 	const TEAM_ID = profile?.team_id || (role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
 
 	if (!TEAM_ID) {
-		return <div className="text-red-500 font-mono text-center p-8">CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM. <br/> [DEBUG] Role: {role || 'null'}, RoleError: {roleError?.message || 'none'}</div>
+		return <div className="text-red-500 font-mono text-center p-8">CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM.</div>
 	}
 
 	const { data: _teamProfiles } = await supabase.from('profiles').select('*').eq('team_id', TEAM_ID)
