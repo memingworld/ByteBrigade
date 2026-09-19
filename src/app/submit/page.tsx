@@ -23,11 +23,15 @@ async function SubmitContent() {
     .order("sort_order")
 
   // Fetch user submission history
-  const { data: submissions } = await supabase
+  const { data: submissions, error: subError } = await supabase
     .from("submissions")
     .select("*, activity_catalog(label)")
     .eq("member_id", user.id)
     .order("submitted_at", { ascending: false })
+
+  if (subError) {
+    console.error("SUBMIT PAGE ERROR:", subError)
+  }
 
   return (
     <div className="container py-8 flex flex-col lg:flex-row gap-8 font-mono">

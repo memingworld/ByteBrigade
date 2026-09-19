@@ -74,11 +74,15 @@ async function AdminContent() {
   }
 
   // Fetch ALL submissions scoped EXACTLY to the admin's team
-  const { data: allSubmissions } = await supabase
+  const { data: allSubmissions, error: subError } = await supabase
     .from("submissions")
     .select("*, profiles(full_name), activity_catalog(label, points), submission_proofs(*)")
     .eq("team_id", adminTeamId)
     .order("submitted_at", { ascending: false })
+    
+  if (subError) {
+    console.error("ADMIN SUBMISSIONS ERROR:", subError)
+  }
 
   // Fetch ByteBrigade Team settings (we use color column for registration toggle)
   const { data: adminTeam } = await supabase
