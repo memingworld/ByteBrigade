@@ -89,7 +89,6 @@ async function DashboardContent() {
 		.limit(20)
 
 	const validRecentSubmissions = (recentSubmissions as any[] || []).filter(sub => {
-		if (EXCEPTION_IDS.includes(sub.member_id)) return true;
 		const r = roleMap.get(sub.member_id)
 		return r !== 'lead' && r !== 'core'
 	})
@@ -109,4 +108,5 @@ export default function DashboardPage() {
 		</Suspense>
 	)
 }
+
 
