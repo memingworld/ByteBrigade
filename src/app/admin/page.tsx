@@ -24,14 +24,8 @@ async function AdminContent() {
     .eq("user_id", user.id)
 
   const userRole = _userRoles?.[0] as any;
-
-  const EXCEPTION_IDS = [
-    '357a1587-7f5c-42b1-be63-9907f993697f', // Me
-  ]
-
-  const isException = EXCEPTION_IDS.includes(user.id)
     
-  if (!isException && (!userRole || (userRole.role !== "core" && userRole.role !== "lead"))) {
+  if (!userRole || (userRole.role !== "core" && userRole.role !== "lead")) {
     return (
       <div className="min-h-[calc(100vh-3.5rem)] flex items-center justify-center p-4">
         <div className="w-full max-w-2xl bg-black border border-red-500 shadow-[0_0_20px_#ff0000] p-8 relative overflow-hidden">
@@ -67,7 +61,8 @@ async function AdminContent() {
     .single()
 
   const profile = _profile as any;
-  const adminTeamId = profile?.team_id || (userRole.role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
+  const { data: team } = await supabase.from("teams").select("id").limit(1).single();
+  const adminTeamId = profile?.team_id || (userRole.role === 'core' ? team?.id : null);
 
   if (!adminTeamId) {
     return <div className="text-red-500 font-mono text-center p-8">CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM.</div>
@@ -84,11 +79,11 @@ async function AdminContent() {
     console.error("ADMIN SUBMISSIONS ERROR:", subError)
   }
 
-  // Fetch ByteBrigade Team settings (we use color column for registration toggle)
+  // Fetch Team settings (we use color column for registration toggle)
   const { data: adminTeam } = await supabase
     .from("teams")
     .select("color")
-    .eq("id", "f876de5d-4ada-4e24-bc97-bba3408d82f2") // Byte Brigade ID
+    .eq("id", adminTeamId)
     .single()
     
   const registrationState = (adminTeam as any)?.color === "CLOSED" ? "CLOSED" : "OPEN"

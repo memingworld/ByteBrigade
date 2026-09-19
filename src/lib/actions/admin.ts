@@ -24,19 +24,18 @@ async function verifyAdmin() {
     
   const profile = _profile as any
 
-  const TEAM_ID = profile?.team_id || (userRole?.role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
+  if (!userRole || (userRole.role !== "core" && userRole.role !== "lead")) {
+    return { authorized: false, teamId: null }
+  }
 
-  const EXCEPTION_IDS = [
-    '357a1587-7f5c-42b1-be63-9907f993697f', // Me
-  ]
+  const { data: team } = await supabase.from("teams").select("id").limit(1).single()
+  const TEAM_ID = profile?.team_id || (userRole?.role === 'core' ? team?.id : null)
 
-  const isException = EXCEPTION_IDS.includes(user.id)
-
-  if ((isException || (userRole && (userRole.role === "core" || userRole.role === "lead"))) && TEAM_ID) {
+  if (TEAM_ID) {
     return { authorized: true, teamId: TEAM_ID }
   }
   
-  return { authorized: false, teamId: null };
+  return { authorized: false, teamId: null }
 }
 
 export async function verifySubmission(formData: FormData) {
@@ -168,14 +167,18 @@ export async function toggleRegistration(formData: FormData) {
   const currentState = formData.get("currentState") as string
   const newState = currentState === "CLOSED" ? "OPEN" : "CLOSED"
 
-  const { error } = await supabase
-    .from("teams")
-    // @ts-ignore
-    .update({ color: newState } as any)
-    .eq("id", "f876de5d-4ada-4e24-bc97-bba3408d82f2")
+  const { data: team } = await supabase.from("teams").select("id").limit(1).single()
 
-  if (error) return { error: error.message }
-  
+  if (team?.id) {
+    const { error } = await supabase
+      .from("teams")
+      // @ts-ignore
+      .update({ color: newState } as any)
+      .eq("id", team.id)
+
+    if (error) return { error: error.message }
+  }
+
   revalidatePath("/admin")
   revalidatePath("/signup")
   return { success: true }

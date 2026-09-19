@@ -19,7 +19,8 @@ export async function submitActivity(formData: FormData) {
   const profile = _profile as any;
   const role = (_roleData as any)?.role;
   
-  const TEAM_ID = profile?.team_id || (role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
+  const { data: team } = await supabase.from("teams").select("id").limit(1).single()
+  const TEAM_ID = profile?.team_id || (role === 'core' ? team?.id : null);
   
   if (!TEAM_ID) {
     return { error: "CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM." }

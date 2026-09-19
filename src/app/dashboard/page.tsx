@@ -30,8 +30,9 @@ async function DashboardContent() {
 	const profile = _profile as any;
 	const role = (_roleData as any)?.role;
 	
+	const { data: team } = await supabase.from("teams").select("id").limit(1).single();
 	// If they are core, they might not have a team_id. Default to this dashboard's team.
-	const TEAM_ID = profile?.team_id || (role === 'core' ? 'f876de5d-4ada-4e24-bc97-bba3408d82f2' : null);
+	const TEAM_ID = profile?.team_id || (role === 'core' ? team?.id : null);
 
 	if (!TEAM_ID) {
 		return <div className="text-red-500 font-mono text-center p-8">CRITICAL ERROR: OPERATIVE IS NOT ASSIGNED TO A TEAM.</div>
@@ -45,13 +46,8 @@ async function DashboardContent() {
 	const roleMap = new Map<string, string>()
 	allRoles.forEach(r => roleMap.set(r.user_id, r.role))
 
-	const EXCEPTION_IDS = [
-		'357a1587-7f5c-42b1-be63-9907f993697f', // Me
-	]
-
 	// Ghost Participant filtering
 	const validProfiles = teamProfiles.filter(p => {
-		if (EXCEPTION_IDS.includes(p.id)) return true;
 		const r = roleMap.get(p.id)
 		return r !== 'lead' && r !== 'core'
 	})

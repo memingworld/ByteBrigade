@@ -57,7 +57,6 @@ export async function updateProfile(formData: FormData) {
   
   const updatePayload: any = {
     id: user.id,
-    team_id: "f876de5d-4ada-4e24-bc97-bba3408d82f2",
     full_name: fullName,
     department,
     enrollment_no: enrollmentNo,

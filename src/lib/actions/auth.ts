@@ -70,13 +70,15 @@ export async function signup(formData: FormData) {
   const userId = authData.user?.id
 
   if (userId) {
+    const { data: team } = await supabase.from("teams").select("id").limit(1).single()
+    
     // 2. Create the user profile
     const { error: profileError } = await supabase.from("profiles").insert({
       id: userId,
       full_name: fullName,
       department: department,
       enrollment_no: enrollmentNo,
-      team_id: "f876de5d-4ada-4e24-bc97-bba3408d82f2", // Default to Byte Brigade
+      team_id: team?.id || null, // Default to primary team
       sprint_track: sprintTrack,
       is_active: true
     } as any)
