@@ -10,13 +10,9 @@ export default async function LoginPage({
 }) {
   const supabase = createClient()
 
-  // Fetch the primary team in this independent database
-  const { data: _team } = await supabase.from("teams").select("id").limit(1).single()
-  const team = _team as any;
-  const TEAM_ID = team?.id
-
   // Fetch safe public profile data for the Meet Our Team section via Secure RPC
-  const { data: _teamMembers, error } = await (supabase as any).rpc('get_meet_our_team', { p_team_id: TEAM_ID })
+  // Since each team has an independent DB, we don't need to pass a team ID
+  const { data: _teamMembers, error } = await (supabase as any).rpc('get_meet_our_team')
     
   if (error) {
     console.error("RPC Error fetching meet our team:", error)
