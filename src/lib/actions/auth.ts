@@ -70,8 +70,8 @@ export async function signup(formData: FormData) {
 	const userId = authData.user?.id
 
 	if (userId) {
-		const { data: _team } = await supabase.from('teams').select('id').limit(1).single()
-		const team = _team as any
+		// Since teams is not public, we use a Secure RPC to fetch the primary team ID safely
+		const { data: primaryTeamId } = await supabase.rpc('get_primary_team_id')
 
 		// 2. Create the user profile
 		const { error: profileError } = await supabase.from('profiles').insert({
@@ -79,7 +79,7 @@ export async function signup(formData: FormData) {
 			full_name: fullName,
 			department: department,
 			enrollment_no: enrollmentNo,
-			team_id: team?.id || null, // Default to primary team
+			team_id: primaryTeamId || null, // Default to primary team
 			sprint_track: sprintTrack,
 			is_active: true,
 		} as any)
