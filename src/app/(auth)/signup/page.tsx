@@ -29,7 +29,7 @@ export default async function SignupPage({
             <div className="border border-red-500 bg-red-900/20 p-6 text-center">
               <h2 className="text-xl font-bold text-red-500 mb-2 font-mono glitch-hover">REGISTRATION CLOSED</h2>
               <p className="text-red-400 font-mono text-sm">
-                TEAM BYTE BRIGADE HAS REACHED MAXIMUM OPERATIVE CAPACITY (8/8).
+                TEAM BYTE BRIGADE HAS REACHED MAXIMUM OPERATIVE CAPACITY (9/9).
                 NO FURTHER ENLISTMENTS ARE BEING ACCEPTED AT THIS TIME.
               </p>
             </div>
