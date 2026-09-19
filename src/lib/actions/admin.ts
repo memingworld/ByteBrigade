@@ -28,7 +28,8 @@ async function verifyAdmin() {
     return { authorized: false, teamId: null }
   }
 
-  const { data: team } = await supabase.from("teams").select("id").limit(1).single()
+  const { data: _team } = await supabase.from("teams").select("id").limit(1).single()
+  const team = _team as any;
   const TEAM_ID = profile?.team_id || (userRole?.role === 'core' ? team?.id : null)
 
   if (TEAM_ID) {
@@ -167,7 +168,8 @@ export async function toggleRegistration(formData: FormData) {
   const currentState = formData.get("currentState") as string
   const newState = currentState === "CLOSED" ? "OPEN" : "CLOSED"
 
-  const { data: team } = await supabase.from("teams").select("id").limit(1).single()
+  const { data: _team } = await supabase.from("teams").select("id").limit(1).single()
+  const team = _team as any;
 
   if (team?.id) {
     const { error } = await supabase
@@ -183,3 +185,4 @@ export async function toggleRegistration(formData: FormData) {
   revalidatePath("/signup")
   return { success: true }
 }
+

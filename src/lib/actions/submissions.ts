@@ -19,7 +19,8 @@ export async function submitActivity(formData: FormData) {
   const profile = _profile as any;
   const role = (_roleData as any)?.role;
   
-  const { data: team } = await supabase.from("teams").select("id").limit(1).single()
+  const { data: _team } = await supabase.from("teams").select("id").limit(1).single()
+  const team = _team as any;
   const TEAM_ID = profile?.team_id || (role === 'core' ? team?.id : null);
   
   if (!TEAM_ID) {
@@ -128,3 +129,4 @@ export async function submitActivity(formData: FormData) {
   
   return { success: true }
 }
+

@@ -28,7 +28,8 @@ export default async function RootLayout({
     const { data: _roleData } = await supabase.from('user_roles').select('role').eq('user_id', user.id).single();
     const profile = _profile as any;
     const role = (_roleData as any)?.role;
-    const { data: team } = await supabase.from("teams").select("id").limit(1).single();
+    const { data: _team } = await supabase.from("teams").select("id").limit(1).single()
+  const team = _team as any;;
     
     // Core users bypass the tenant lock so they can access all dashboards
     if (role !== 'core' && profile && profile.team_id !== team?.id) {
@@ -71,3 +72,4 @@ export default async function RootLayout({
     </html>
   );
 }
+

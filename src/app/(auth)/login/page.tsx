@@ -11,7 +11,8 @@ export default async function LoginPage({
   const supabase = createClient()
 
   // Fetch the primary team in this independent database
-  const { data: team } = await supabase.from("teams").select("id").limit(1).single()
+  const { data: _team } = await supabase.from("teams").select("id").limit(1).single()
+  const team = _team as any;
   const TEAM_ID = team?.id
 
   // Fetch safe public profile data for the Meet Our Team section via Secure RPC
@@ -139,3 +140,4 @@ export default async function LoginPage({
     </div>
   )
 }
+

@@ -61,7 +61,8 @@ async function AdminContent() {
     .single()
 
   const profile = _profile as any;
-  const { data: team } = await supabase.from("teams").select("id").limit(1).single();
+  const { data: _team } = await supabase.from("teams").select("id").limit(1).single()
+  const team = _team as any;;
   const adminTeamId = profile?.team_id || (userRole.role === 'core' ? team?.id : null);
 
   if (!adminTeamId) {
@@ -131,3 +132,4 @@ export default function AdminPage() {
     </Suspense>
   )
 }
+

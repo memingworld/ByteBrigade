@@ -30,7 +30,8 @@ async function DashboardContent() {
 	const profile = _profile as any;
 	const role = (_roleData as any)?.role;
 	
-	const { data: team } = await supabase.from("teams").select("id").limit(1).single();
+	const { data: _team } = await supabase.from("teams").select("id").limit(1).single()
+  const team = _team as any;;
 	// If they are core, they might not have a team_id. Default to this dashboard's team.
 	const TEAM_ID = profile?.team_id || (role === 'core' ? team?.id : null);
 
@@ -108,3 +109,4 @@ export default function DashboardPage() {
 		</Suspense>
 	)
 }
+

@@ -70,7 +70,8 @@ export async function signup(formData: FormData) {
   const userId = authData.user?.id
 
   if (userId) {
-    const { data: team } = await supabase.from("teams").select("id").limit(1).single()
+    const { data: _team } = await supabase.from("teams").select("id").limit(1).single()
+  const team = _team as any;
     
     // 2. Create the user profile
     const { error: profileError } = await supabase.from("profiles").insert({
@@ -97,3 +98,4 @@ export async function logout() {
   await supabase.auth.signOut()
   return redirect("/login")
 }
+
